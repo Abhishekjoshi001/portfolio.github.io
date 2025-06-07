@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic Price Comparison - Binary Search Trees</title>
+    <link rel="stylesheet" href="case-detail-styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navigation -->
+      <nav class="navigation">
+        <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        <div class="nav-title">Business Case Analysis</div>
+      </nav>
+
+      <!-- Case Header -->
+      <div class="case-header">
+        <div class="case-number">Business Case #6</div>
+        <h1 class="case-title">Dynamic Price Comparison</h1>
+        <div class="algorithm-badge">Algorithm: Binary Search Trees</div>
+      </div>
+
+      <!-- Case Content -->
+      <div class="case-content">
+        <!-- Business Case Brief -->
+        <section class="content-section">
+          <h2>Business Case Overview</h2>
+          <div class="business-brief">
+            Amazon operates in a highly competitive retail landscape where product prices change frequently due to market conditions, discounts, and third-party seller strategies. To ensure customers always see the best value, Amazon must dynamically compare prices across millions of listings in real-time. Traditional linear comparisons are too slow at scale. Instead, Amazon uses Binary Search Trees (BSTs) to manage and search through product prices efficiently. BSTs provide a fast way to insert, delete, and query prices, making them an ideal data structure for real-time price analysis and decision making.
+          </div>
+        </section>
+
+        <!-- Algorithm Explanation -->
+        <section class="content-section">
+          <h2>Algorithm Explanation</h2>
+          <div class="algorithm-explanation">
+            A Binary Search Tree is a hierarchical data structure in which each node has at most two children, referred to as the left and right child. For each node, all values in the left subtree are smaller, and all values in the right subtree are greater. This property allows fast lookups, insertions, and deletions in O(log n) time on average. 
+            <br /><br />
+            In the context of price comparison, each product price from different sellers or over time can be inserted into a BST. To find the best price (minimum or maximum), Amazon can simply traverse to the leftmost or rightmost node. BSTs also allow range queries and nearest neighbor lookups, enabling features like "compare to similar products", "show price trends", or "alert for better deals". This structure supports real-time updates without needing to scan the entire dataset.
+          </div>
+
+          <!-- Algorithm Image Placeholder -->
+          <div class="image-container">
+            <img
+              src="gifs and imagees/bst.gif"
+              class="algorithm-img"
+            />
+            <div>[10] Binary Search Tree visualization</div>
+          </div>
+        </section>
+
+        <!-- Business Application -->
+        <section class="content-section">
+          <h2>How This Algorithm Solves the Business Problem</h2>
+          <div class="business-application">
+            Suppose a user is browsing for a smartphone, and multiple sellers have listed it at varying prices. To present the best deal instantly, Amazon inserts all price options into a Binary Search Tree. When the user initiates a price comparison, the BST is traversed to fetch the minimum price. If a new seller offers a better deal, their price is inserted in logarithmic time. Similarly, expired or outdated prices are deleted efficiently.
+            <br /><br />
+            The BST structure also allows Amazon to analyze price fluctuations over time, suggest alternative products within a price range, and issue price drop alerts. The speed and scalability of BSTs directly contribute to customer satisfaction and revenue growth.
+          </div>
+        </section>
+
+        <!-- Code Implementation Section -->
+        <div class="code-container">
+          <div class="code-header">
+            <span class="language-tag">C++ - Binary Search Tree</span>
+            <button class="expand-btn" onclick="toggleCode('bst-code', event)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6,9 12,15 18,9"></polyline>
+              </svg>
+              Show Full Code
+            </button>
+            <button class="copy-btn" onclick="copyCode('bst-code', event)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="m5 15-4-4 4-4"></path>
+              </svg>
+              Copy Code
+            </button>
+          </div>
+          <pre class="code-block collapsed" id="bst-code"><code id="codeContent">
+#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int price;
+    Node* left;
+    Node* right;
+
+    Node(int val) : price(val), left(nullptr), right(nullptr) {}
+};
+
+Node* insert(Node* root, int price) {
+    if (!root) return new Node(price);
+    if (price < root->price) root->left = insert(root->left, price);
+    else root->right = insert(root->right, price);
+    return root;
+}
+
+int findMin(Node* root) {
+    if (!root) return -1;
+    while (root->left) root = root->left;
+    return root->price;
+}
+
+int findMax(Node* root) {
+    if (!root) return -1;
+    while (root->right) root = root->right;
+    return root->price;
+}
+
+int main() {
+    Node* priceTree = nullptr;
+    priceTree = insert(priceTree, 1999);
+    priceTree = insert(priceTree, 1899);
+    priceTree = insert(priceTree, 2100);
+    priceTree = insert(priceTree, 1700);
+    priceTree = insert(priceTree, 2300);
+
+    cout << "Lowest Price: Rs. " << findMin(priceTree) << endl;
+    cout << "Highest Price: Rs. " << findMax(priceTree) << endl;
+    return 0;
+}
+          </code></pre>
+        </div>
+
+        <!-- Remaining content unchanged... -->
+
+        <script>
+             function toggleCode(codeId) {
+            const codeBlock = document.getElementById(codeId).closest('.code-block');
+            const expandBtn = event.target.closest('.expand-btn');
+            
+            if (codeBlock.classList.contains('collapsed')) {
+                codeBlock.classList.remove('collapsed');
+                expandBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="18,15 12,9 6,15"></polyline>
+                    </svg>
+                    Hide Code
+                `;
+            } else {
+                codeBlock.classList.add('collapsed');
+                expandBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6,9 12,15 18,9"></polyline>
+                    </svg>
+                    Show Full Code
+                `;
+            }
+        }
+          function copyCode() {
+            const codeContent =
+              document.getElementById("codeContent").textContent;
+            const copyBtn = document.querySelector(".copy-btn");
+
+            navigator.clipboard
+              .writeText(codeContent)
+              .then(() => {
+                // Visual feedback
+                copyBtn.classList.add("copied");
+                copyBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"></polyline>
+            </svg>
+            Copied!
+        `;
+
+                // Reset after 2 seconds
+                setTimeout(() => {
+                  copyBtn.classList.remove("copied");
+                  copyBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="m5 15-4-4 4-4"></path>
+                </svg>
+                Copy Code
+            `;
+                }, 2000);
+              })
+              .catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement("textarea");
+                textArea.value = codeContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+
+                copyBtn.textContent = "Copied!";
+                setTimeout(() => {
+                  copyBtn.textContent = "Copy Code";
+                }, 2000);
+              });
+          }
+        </script>
+
+        <!-- Complexity Analysis Section -->
+<section class="content-section">
+  <h2>Algorithm Complexity Analysis</h2>
+  <div class="complexity-overview">
+    Binary Search Trees (BST) offer efficient search, insertion, and deletion operations, making them ideal for dynamic price comparison in large product catalogs. BSTs allow quick updates and lookups, enabling real-time price adjustments and comparisons.
+  </div>
+
+  <!-- Complexity Comparison Table -->
+  <div class="table-container">
+    <h3>Time & Space Complexity Comparison</h3>
+    <table class="complexity-table">
+      <thead>
+        <tr>
+          <th>Algorithm</th>
+          <th>Time Complexity</th>
+          <th>Space Complexity</th>
+          <th>Use Case</th>
+          <th>Scalability</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Binary Search Trees</strong></td>
+          <td class="good">O(log N) average, O(N) worst</td>
+          <td class="good">O(N)</td>
+          <td>Dynamic Price Comparison</td>
+          <td class="best">Good</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Why BST is Superior -->
+  <div class="table-container">
+    <h3>Search Experience Analysis</h3>
+    <table class="complexity-table">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Binary Search Trees</th>
+          <th>Impact on Users</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Relevance</strong></td>
+          <td class="best">Efficient Lookup</td>
+          <td>Faster Price Retrieval</td>
+        </tr>
+        <tr>
+          <td><strong>Personalization</strong></td>
+          <td class="good">Supports Real-Time Updates</td>
+          <td>Timely Price Adjustments</td>
+        </tr>
+        <tr>
+          <td><strong>Result Trust</strong></td>
+          <td class="best">Consistent and Accurate</td>>
+          <td>Increased Buyer Confidence</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Key Advantages -->
+  <h3>Why Binary Search Trees Excel for Price Comparison</h3>
+  <div class="advantages-grid">
+    <div class="advantage-card">
+      <h4>🔍 Fast Search</h4>
+      <p>Allows quick retrieval of product prices even in large datasets.</p>
+    </div>
+    <div class="advantage-card">
+      <h4>⚡ Dynamic Updates</h4>
+      <p>Efficiently supports frequent price changes and insertions.</p>
+    </div>
+    <div class="advantage-card">
+      <h4>📈 Balanced Performance</h4>
+      <p>Maintains good average-case complexity for smooth user experience.</p>
+    </div>
+    <div class="advantage-card">
+      <h4>🔗 Integration Ready</h4>
+      <p>Works well alongside other data structures and machine learning models.</p>
+    </div>
+  </div>
+
+  <div class="complexity-note">
+    <strong>Real-world Impact:</strong> Implementing BST-based dynamic price comparison enables Amazon to deliver fast, reliable, and up-to-date pricing, helping customers make informed decisions and boosting sales conversion rates.
+  </div>
+</section>
+
+
+        <!-- Case Navigation -->
+        <div class="case-navigation">
+          <a href="case-detail5.html" class="nav-btn prev-btn">← Prev page</a>
+          <a href="case-detail7.html" class="nav-btn next-btn">Next Case →</a>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+          <p>&copy; 2024 Abhishek A Joshi - KLE Technological University</p>
+          <p>Algorithmic Problem Solving Portfolio</p>
+        </footer>
+      </div>
+  </body>
+</html>

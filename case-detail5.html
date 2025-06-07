@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Result Ranking - PageRank Algorithm</title>
+    <link rel="stylesheet" href="case-detail-styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navigation -->
+      <nav class="navigation">
+        <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        <div class="nav-title">Business Case Analysis</div>
+      </nav>
+
+      <!-- Case Header -->
+      <div class="case-header">
+        <div class="case-number">Business Case #5</div>
+        <h1 class="case-title">Search Result Ranking</h1>
+        <div class="algorithm-badge">Algorithm: PageRank</div>
+      </div>
+
+      <!-- Case Content -->
+      <div class="case-content">
+        <!-- Business Case Brief -->
+        <section class="content-section">
+          <h2>Business Case Overview</h2>
+          <div class="business-brief">
+            Amazon handles millions of user queries daily, each generating a dynamic list of product results. To maximize customer satisfaction, drive engagement, and increase sales, it's essential that the most relevant and influential products appear at the top of the search results. Traditional keyword-based search systems often fall short when it comes to ranking products that are less frequently searched but highly relevant due to customer behavior. Amazon's solution involves treating products and their relationships as a graph and applying the PageRank algorithm to evaluate the influence of each product.
+            <br /><br />
+            Products are treated as nodes, and co-purchase, co-view, and frequently bundled items create the directed edges. The importance of a product is determined by its connections to other important products. Thus, even if a product does not contain the exact search keyword, its high influence in the network can justify a higher rank in the result list. This approach ensures high-quality, behavior-driven ranking that reflects real customer interactions.
+          </div>
+        </section>
+
+        <!-- Algorithm Explanation -->
+        <section class="content-section">
+          <h2>Algorithm Explanation</h2>
+          <div class="algorithm-explanation">
+            PageRank, originally developed for ranking web pages, is a powerful algorithm for determining the significance of nodes in a directed graph. The basic idea is that a node (product, in Amazon's case) is important if other important nodes point to it. This recursive definition is calculated iteratively. Each node distributes its score equally among its out-links. The total score a node receives becomes its updated PageRank value in the next iteration. A damping factor (commonly 0.85) ensures the algorithm avoids loops and dangling nodes by distributing a fraction of the score uniformly to all nodes.
+            <br /><br />
+            In Amazon's implementation, every product in the catalog is represented as a node. Edges are drawn based on co-interaction data: "people who bought this also bought that", "frequently viewed together", and more. PageRank operates on this graph structure, calculating a final ranking score for each product that represents how central or influential it is in the product ecosystem. This score can then be combined with keyword relevance and personalized metrics to present the most meaningful results to customers.
+          </div>
+
+          <!-- Algorithm Image Placeholder -->
+          <div class="image-container">
+            <img
+              src="gifs and imagees/page-rank.gif"
+              class="algorithm-img"
+            />
+            <div>[9] PageRank algorithm visualization</div>
+          </div>
+        </section>
+
+        <!-- Business Application -->
+        <section class="content-section">
+          <h2>How This Algorithm Solves the Business Problem</h2>
+          <div class="business-application">
+            When a customer searches for something broad like "gaming mouse" or "wireless earbuds," Amazon retrieves thousands of potential matches. Rather than just showing results with matching keywords, PageRank helps surface products that are popular in the context of the user’s intent. For instance, if a lesser-known brand is frequently bought with top-rated products or is often included in curated deals, it gains a high PageRank score and ranks higher.
+            <br /><br />
+            This algorithm ensures relevance beyond simple textual matches by leveraging the behavioral intelligence of millions of users. Customers see higher-quality, community-endorsed results first, leading to improved satisfaction, increased purchases, and better visibility for emerging products. Internally, this boosts Amazon's efficiency in matching user demand with seller supply, optimizing the overall marketplace dynamics.
+          </div>
+        </section>
+
+        <!-- Code Implementation Section -->
+        <div class="code-container">
+          <div class="code-header">
+            <span class="language-tag">C++ - PageRank</span>
+            <button class="expand-btn" onclick="toggleCode('pagerank-code', event)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6,9 12,15 18,9"></polyline>
+              </svg>
+              Show Full Code
+            </button>
+            <button class="copy-btn" onclick="copyCode('pagerank-code', event)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="m5 15-4-4 4-4"></path>
+              </svg>
+              Copy Code
+            </button>
+          </div>
+          <pre class="code-block collapsed" id="pagerank-code"><code id="codeContent">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+
+using namespace std;
+
+vector&lt;double&gt; pageRank(const vector&lt;vector&lt;int&gt;&gt;& graph, double damping = 0.85, int maxIter = 100, double tol = 1e-6) {
+    int n = graph.size();
+    vector&lt;double&gt; rank(n, 1.0 / n);
+    vector&lt;int&gt; outDegree(n);
+
+    for (int i = 0; i &lt; n; ++i) {
+        outDegree[i] = graph[i].size();
+    }
+
+    for (int iter = 0; iter &lt; maxIter; ++iter) {
+        vector&lt;double&gt; newRank(n, (1.0 - damping) / n);
+
+        for (int u = 0; u &lt; n; ++u) {
+            if (outDegree[u] == 0) continue;
+            for (int v : graph[u]) {
+                newRank[v] += damping * rank[u] / outDegree[u];
+            }
+        }
+
+        double diff = 0.0;
+        for (int i = 0; i &lt; n; ++i) {
+            diff += abs(newRank[i] - rank[i]);
+        }
+
+        rank = newRank;
+        if (diff &lt; tol) break;
+    }
+
+    return rank;
+}
+
+int main() {
+    vector&lt;vector&lt;int&gt;&gt; productGraph = {
+        {1, 2}, // product 0 links to 1, 2
+        {2},    // product 1 links to 2
+        {0},    // product 2 links to 0
+        {0, 2}, // product 3 links to 0, 2
+        {2, 3}  // product 4 links to 2, 3
+    };
+
+    vector&lt;double&gt; ranks = pageRank(productGraph);
+
+    cout &lt;&lt; "Product PageRanks:\n";
+    for (int i = 0; i &lt; ranks.size(); ++i) {
+        cout &lt;&lt; "Product " &lt;&lt; i &lt;&lt; ": " &lt;&lt; ranks[i] &lt;&lt; endl;
+    }
+    return 0;
+}
+          </code></pre>
+        </div>
+        <script>
+             function toggleCode(codeId) {
+            const codeBlock = document.getElementById(codeId).closest('.code-block');
+            const expandBtn = event.target.closest('.expand-btn');
+            
+            if (codeBlock.classList.contains('collapsed')) {
+                codeBlock.classList.remove('collapsed');
+                expandBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="18,15 12,9 6,15"></polyline>
+                    </svg>
+                    Hide Code
+                `;
+            } else {
+                codeBlock.classList.add('collapsed');
+                expandBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6,9 12,15 18,9"></polyline>
+                    </svg>
+                    Show Full Code
+                `;
+            }
+        }
+          function copyCode() {
+            const codeContent =
+              document.getElementById("codeContent").textContent;
+            const copyBtn = document.querySelector(".copy-btn");
+
+            navigator.clipboard
+              .writeText(codeContent)
+              .then(() => {
+                // Visual feedback
+                copyBtn.classList.add("copied");
+                copyBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"></polyline>
+            </svg>
+            Copied!
+        `;
+
+                // Reset after 2 seconds
+                setTimeout(() => {
+                  copyBtn.classList.remove("copied");
+                  copyBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="m5 15-4-4 4-4"></path>
+                </svg>
+                Copy Code
+            `;
+                }, 2000);
+              })
+              .catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement("textarea");
+                textArea.value = codeContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+
+                copyBtn.textContent = "Copied!";
+                setTimeout(() => {
+                  copyBtn.textContent = "Copy Code";
+                }, 2000);
+              });
+          }
+        </script>
+
+        <!-- Complexity Analysis Section -->
+        <section class="content-section">
+          <h2>Algorithm Complexity Analysis</h2>
+          <div class="complexity-overview">
+            PageRank’s iterative nature provides high-quality results at the cost of slightly higher computation. For real-time or near-real-time scenarios, precomputing PageRank scores periodically and caching them ensures speed.
+          </div>
+
+          <!-- Complexity Comparison Table -->
+          <div class="table-container">
+            <h3>Time & Space Complexity Comparison</h3>
+            <table class="complexity-table">
+              <thead>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Time Complexity</th>
+                  <th>Space Complexity</th>
+                  <th>Use Case</th>
+                  <th>Scalability</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>PageRank</strong></td>
+                  <td class="good">O(kE)</td>
+                  <td class="good">O(N)</td>
+                  <td>Product Influence Ranking</td>
+                  <td class="best">Excellent</td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Why PageRank is Superior -->
+          <div class="table-container">
+            <h3>Search Experience Analysis</h3>
+            <table class="complexity-table">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>PageRank</th>
+                  <th>Text-Only Ranking</th>
+                  <th>Impact on Users</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Relevance</strong></td>
+                  <td class="best">Context-Aware</td>
+                  <td class="poor">Literal Match Only</td>
+                  <td>Improved Satisfaction</td>
+                </tr>
+                <tr>
+                  <td><strong>Personalization</strong></td>
+                  <td class="best">Graph-Adaptive</td>
+                  <td class="good">Session-Based</td>
+                  <td>Higher Engagement</td>
+                </tr>
+                <tr>
+                  <td><strong>Result Trust</strong></td>
+                  <td class="best">Implicitly Trusted</td>
+                  <td class="poor">No Trust Signal</td>
+                  <td>Increased Conversions</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Key Advantages -->
+          <h3>Why PageRank Excels for Search Ranking</h3>
+          <div class="advantages-grid">
+            <div class="advantage-card">
+              <h4>🔄 Graph-Aware Insights</h4>
+              <p>Ranks products based on their network position, not just keywords.</p>
+            </div>
+            <div class="advantage-card">
+              <h4>✨ Authority Modeling</h4>
+              <p>Recognizes "popular-by-association" trends for smarter ranking.</p>
+            </div>
+            <div class="advantage-card">
+              <h4>🚀 Scalable Ranking</h4>
+              <p>Works well with large catalogs when precomputed or cached.</p>
+            </div>
+            <div class="advantage-card">
+              <h4>⚖️ Hybrid Integration</h4>
+              <p>Combines well with NLP-based or ML-based scoring for robust ranking.</p>
+            </div>
+          </div>
+
+          <div class="complexity-note">
+            <strong>Real-world Impact:</strong> By using PageRank-based ranking in search, e-commerce platforms can boost click-through rates by up to 40% by surfacing trusted, connected, and relevant products over isolated keyword matches.
+          </div>
+        </section>
+
+        <!-- Case Navigation -->
+        <div class="case-navigation">
+          <a href="case-detail4.html" class="nav-btn prev-btn">← Prev page</a>
+          <a href="case-detail6.html" class="nav-btn next-btn">Next Case →</a>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+          <p>&copy; 2024 Abhishek A Joshi - KLE Technological University</p>
+          <p>Algorithmic Problem Solving Portfolio</p>
+        </footer>
+      </div>
+  </body>
+</html>

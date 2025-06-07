@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network Bandwidth Allocation - Optimization Algorithms</title>
+    <link rel="stylesheet" href="case-detail-styles.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- Navigation -->
+      <nav class="navigation">
+        <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        <div class="nav-title">Business Case Analysis</div>
+      </nav>
+
+      <!-- Case Header -->
+      <div class="case-header">
+        <div class="case-number">Business Case #10</div>
+        <h1 class="case-title">Network Bandwidth Allocation</h1>
+        <div class="algorithm-badges">
+          <div class="algorithm-badge">
+            Algorithm 1: Ford-Fulkerson Max Flow
+          </div>
+          <div class="algorithm-badge">Algorithm 2: Push-Relabel Algorithm</div>
+        </div>
+      </div>
+
+      <!-- Case Content -->
+      <div class="case-content">
+        <section class="content-section">
+          <h2>Business Case Overview</h2>
+          <div class="business-brief">
+            <p>
+              Amazon Web Services (AWS) operates one of the world's largest
+              cloud infrastructure networks, serving millions of customers
+              globally. To ensure optimal performance and reliability, AWS must
+              efficiently allocate network bandwidth across its data centers,
+              edge locations, and content delivery networks. The network
+              bandwidth allocation problem involves determining the maximum data
+              flow that can be transmitted from source nodes (data centers) to
+              destination nodes (customer endpoints) through intermediate
+              network nodes with limited capacity constraints. By modeling the
+              entire network infrastructure as a flow graph, where nodes
+              represent network devices and edges represent network links with
+              bandwidth capacities, AWS can optimize data routing, identify
+              bottlenecks, and ensure high-quality service delivery. This
+              optimization is critical during peak traffic periods, live
+              streaming events, and when handling massive data transfers for
+              enterprise customers.
+            </p>
+          </div>
+        </section>
+        <!-- Algorithm Selection Buttons -->
+        <section class="content-section">
+          <h2>Algorithm Comparison</h2>
+          <div class="algorithm-selector">
+            <button
+              class="algorithm-btn active"
+              onclick="showAlgorithm('ford')"
+            >
+              Ford-Fulkerson Max Flow Algorithm
+            </button>
+            <button class="algorithm-btn" onclick="showAlgorithm('push')">
+              Push-Relabel Algorithm
+            </button>
+          </div>
+        </section>
+
+        <!-- Ford-Fulkerson Max Flow Section -->
+        <div id="ford-section" class="algorithm-section active">
+          <section class="content-section">
+            <h2>Ford-Fulkerson Max Flow Algorithm Explanation</h2>
+            <div class="algorithm-explanation">
+              <p>
+                Ford-Fulkerson is a fundamental algorithm for solving the
+                maximum flow problem in flow networks. It works by finding
+                augmenting paths from source to sink and pushing flow along
+                these paths until no more augmenting paths exist. In Amazon's
+                network infrastructure, this algorithm helps determine the
+                maximum bandwidth that can be allocated from data centers to
+                customer endpoints through the network topology.
+              </p>
+
+              <p><strong>How it works:</strong></p>
+              <ol>
+                <li>
+                  Model the network as a directed graph where nodes represent
+                  network devices (routers, switches, servers) and edges
+                  represent network links with bandwidth capacities.
+                </li>
+                <li>
+                  Initialize all flows to zero and create a residual graph that
+                  tracks available capacity on each network link.
+                </li>
+                <li>
+                  Use BFS or DFS to find an augmenting path from source (data
+                  center) to sink (customer endpoint) with available bandwidth.
+                </li>
+                <li>
+                  Determine the bottleneck capacity along the path and push this
+                  amount of flow through the network.
+                </li>
+                <li>
+                  Update the residual graph by reducing forward capacities and
+                  increasing backward capacities.
+                </li>
+                <li>
+                  Repeat until no more augmenting paths can be found, yielding
+                  the maximum network flow.
+                </li>
+              </ol>
+            </div>
+          </section>
+
+          <!-- Algorithm Image Placeholder -->
+          <div class="image-container">
+            <img
+              src="gifs and imagees/FordFulkerson.gif"
+              alt="ford Algorithm Visualization"
+              class="algorithm-img"
+            />
+            <div class="image-caption">
+              [15] Ford-Fulkerson Max Flow Algorithm
+            </div>
+          </div>
+
+          <section class="content-section">
+            <h2>
+              How Ford-Fulkerson Max Flow Algorithm Solves Amazon's Network
+              Bandwidth Problem
+            </h2>
+            <div class="business-application">
+              <p>
+                Ford-Fulkerson enables Amazon to model and optimize bandwidth
+                allocation across its global network infrastructure. By
+                calculating the maximum data flow capacity between network
+                nodes, Amazon can ensure efficient data routing, prevent network
+                congestion, and maintain high-quality service delivery for cloud
+                services and content distribution.
+              </p>
+
+              <p><strong>Real-world Application:</strong></p>
+              <ul>
+                <li>
+                  <strong>Maximum Throughput Calculation:</strong> Determines
+                  the maximum data transfer rate that can be sustained from AWS
+                  data centers to customer regions under current network
+                  constraints.
+                </li>
+                <li>
+                  <strong>Bottleneck Identification:</strong> Identifies network
+                  links or devices that limit overall data flow capacity,
+                  enabling targeted infrastructure upgrades.
+                </li>
+                <li>
+                  <strong>Load Balancing:</strong> Helps distribute network
+                  traffic across multiple paths to prevent overloading specific
+                  network segments.
+                </li>
+                <li>
+                  <strong>Disaster Recovery Planning:</strong> Ensures
+                  alternative network paths have sufficient capacity to handle
+                  traffic rerouting during network failures or maintenance.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Ford-Fulkerson Max Flow Code Implementation -->
+          <section class="content-section">
+            <h2>Ford-Fulkerson Max Flow Algorithm Implementation</h2>
+            <div class="code-container">
+              <div class="code-header">
+                <span class="language-tag"
+                  >C++ - Ford-Fulkerson Max Flow Algorithm</span
+                >
+                <button class="expand-btn" onclick="toggleCode('ford-code')">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="6,9 12,15 18,9"></polyline>
+                  </svg>
+                  Show Full Code
+                </button>
+                <button class="copy-btn" onclick="copyCode('ford-code')">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect
+                      x="9"
+                      y="9"
+                      width="13"
+                      height="13"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <path d="m5 15-4-4 4-4"></path>
+                  </svg>
+                  Copy Code
+                </button>
+              </div>
+              <pre
+                class="code-block collapsed"
+              ><code id="ford-code">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+#include &lt;climits&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+class NetworkBandwidthAllocator {
+private:
+    int vertices;
+    vector&lt;vector&lt;int&gt;&gt; capacity;
+    vector&lt;vector&lt;int&gt;&gt; adjacencyList;
+
+public:
+    NetworkBandwidthAllocator(int v) : vertices(v) {
+        capacity.resize(v, vector&lt;int&gt;(v, 0));
+        adjacencyList.resize(v);
+    }
+
+    // Add network link with bandwidth capacity
+    void addNetworkLink(int source, int destination, int bandwidth) {
+        capacity[source][destination] = bandwidth;
+        adjacencyList[source].push_back(destination);
+        adjacencyList[destination].push_back(source);
+    }
+
+    // BFS to find augmenting path in residual graph
+    bool findAugmentingPath(vector&lt;vector&lt;int&gt;&gt;&amp; residualGraph, int source, int sink, vector&lt;int&gt;&amp; parent) {
+        vector&lt;bool&gt; visited(vertices, false);
+        queue&lt;int&gt; bfsQueue;
+        
+        bfsQueue.push(source);
+        visited[source] = true;
+        parent[source] = -1;
+
+        while (!bfsQueue.empty()) {
+            int currentNode = bfsQueue.front();
+            bfsQueue.pop();
+
+            for (int neighbor = 0; neighbor &lt; vertices; neighbor++) {
+                if (!visited[neighbor] &amp;&amp; residualGraph[currentNode][neighbor] &gt; 0) {
+                    bfsQueue.push(neighbor);
+                    parent[neighbor] = currentNode;
+                    visited[neighbor] = true;
+                    
+                    if (neighbor == sink) {
+                        return true; // Path to sink found
+                    }
+                }
+            }
+        }
+        return false; // No path to sink
+    }
+
+    // Ford-Fulkerson algorithm for maximum network flow
+    int calculateMaxBandwidth(int source, int sink) {
+        vector&lt;vector&lt;int&gt;&gt; residualGraph = capacity;
+        vector&lt;int&gt; parent(vertices);
+        int maxFlow = 0;
+
+        cout &lt;&lt; "=== Amazon Network Bandwidth Allocation Analysis ===" &lt;&lt; endl;
+        cout &lt;&lt; "Source: Data Center " &lt;&lt; source &lt;&lt; endl;
+        cout &lt;&lt; "Sink: Customer Endpoint " &lt;&lt; sink &lt;&lt; endl &lt;&lt; endl;
+
+        int pathCount = 1;
+        
+        // Find augmenting paths until none exist
+        while (findAugmentingPath(residualGraph, source, sink, parent)) {
+            // Find bottleneck capacity along the path
+            int pathFlow = INT_MAX;
+            for (int v = sink; v != source; v = parent[v]) {
+                int u = parent[v];
+                pathFlow = min(pathFlow, residualGraph[u][v]);
+            }
+
+            cout &lt;&lt; "Path " &lt;&lt; pathCount &lt;&lt; ": ";
+            vector&lt;int&gt; path;
+            for (int v = sink; v != source; v = parent[v]) {
+                path.push_back(v);
+            }
+            path.push_back(source);
+            reverse(path.begin(), path.end());
+            
+            for (int i = 0; i &lt; path.size(); i++) {
+                cout &lt;&lt; "Node" &lt;&lt; path[i];
+                if (i &lt; path.size() - 1) cout &lt;&lt; " -> ";
+            }
+            cout &lt;&lt; " | Bandwidth: " &lt;&lt; pathFlow &lt;&lt; " Mbps" &lt;&lt; endl;
+
+            // Update residual capacities
+            for (int v = sink; v != source; v = parent[v]) {
+                int u = parent[v];
+                residualGraph[u][v] -= pathFlow;
+                residualGraph[v][u] += pathFlow;
+            }
+
+            maxFlow += pathFlow;
+            pathCount++;
+        }
+
+        return maxFlow;
+    }
+
+    void displayNetworkTopology() {
+        cout &lt;&lt; "\n=== Network Topology ===" &lt;&lt; endl;
+        for (int i = 0; i &lt; vertices; i++) {
+            cout &lt;&lt; "Node " &lt;&lt; i &lt;&lt; " connections: ";
+            for (int j = 0; j &lt; vertices; j++) {
+                if (capacity[i][j] &gt; 0) {
+                    cout &lt;&lt; "Node" &lt;&lt; j &lt;&lt; "(" &lt;&lt; capacity[i][j] &lt;&lt; "Mbps) ";
+                }
+            }
+            cout &lt;&lt; endl;
+        }
+        cout &lt;&lt; endl;
+    }
+};
+
+int main() {
+    /*
+      Amazon Network Topology:
+      Node 0: Primary Data Center (Source)
+      Node 1: Regional Hub A
+      Node 2: Regional Hub B  
+      Node 3: Edge Location A
+      Node 4: Edge Location B
+      Node 5: Customer Endpoint (Sink)
+    */
+
+    NetworkBandwidthAllocator amazonNetwork(6);
+
+    // Configure network links with bandwidth capacities (in Mbps)
+    amazonNetwork.addNetworkLink(0, 1, 100);  // Data Center to Hub A
+    amazonNetwork.addNetworkLink(0, 2, 150);  // Data Center to Hub B
+    amazonNetwork.addNetworkLink(1, 3, 80);   // Hub A to Edge A
+    amazonNetwork.addNetworkLink(1, 4, 60);   // Hub A to Edge B
+    amazonNetwork.addNetworkLink(2, 3, 70);   // Hub B to Edge A
+    amazonNetwork.addNetworkLink(2, 4, 90);   // Hub B to Edge B
+    amazonNetwork.addNetworkLink(3, 5, 120);  // Edge A to Customer
+    amazonNetwork.addNetworkLink(4, 5, 110);  // Edge B to Customer
+
+    amazonNetwork.displayNetworkTopology();
+
+    int maxBandwidth = amazonNetwork.calculateMaxBandwidth(0, 5);
+    
+    cout &lt;&lt; "\n=== Network Bandwidth Allocation Results ===" &lt;&lt; endl;
+    cout &lt;&lt; "Maximum sustainable bandwidth: " &lt;&lt; maxBandwidth &lt;&lt; " Mbps" &lt;&lt; endl;
+    cout &lt;&lt; "Network utilization optimized for peak performance." &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+            </div>
+          </section>
+        </div>
+
+        <!-- Push-Relabel Section -->
+        <div id="push-section" class="algorithm-section">
+          <section class="content-section">
+            <h2>Push-Relabel Algorithm Explanation</h2>
+            <div class="algorithm-explanation">
+              <p>
+                The Push-Relabel algorithm is an advanced approach for solving
+                maximum flow problems, particularly effective for dense networks
+                and large-scale systems like Amazon's cloud infrastructure.
+                Unlike Ford-Fulkerson which finds augmenting paths, Push-Relabel
+                operates locally by maintaining a preflow and gradually pushing
+                excess flow towards the sink while adjusting node heights to
+                guide the flow direction.
+              </p>
+
+              <p><strong>How it works:</strong></p>
+              <ol>
+                <li>
+                  Initialize by setting the source height to the number of
+                  vertices and pushing maximum possible flow from source to
+                  adjacent nodes.
+                </li>
+                <li>
+                  Maintain height labels for each node to ensure flow moves from
+                  higher to lower heights, simulating a "downhill" flow.
+                </li>
+                <li>
+                  For nodes with excess flow, attempt to push flow to adjacent
+                  nodes with lower height and available capacity.
+                </li>
+                <li>
+                  If no valid push operation is possible, relabel the node by
+                  increasing its height to enable future pushes.
+                </li>
+                <li>
+                  Continue push and relabel operations until no excess flow
+                  remains except at the sink.
+                </li>
+                <li>
+                  The total flow accumulated at the sink represents the maximum
+                  network bandwidth allocation.
+                </li>
+              </ol>
+            </div>
+          </section>
+
+          <div class="image-container">
+            <img
+              src="gifs and imagees/push.jpeg"
+              alt="Push Visualization"
+              class="algorithm-img"
+            />
+            <div class="image-caption">
+              [16] Push-Relabel Algorithm
+            </div>
+          </div>
+
+          <section class="content-section">
+            <h2>
+              How Push-Relabel Algorithm Solves Amazon's Network Bandwidth
+              Problem
+            </h2>
+            <div class="business-application">
+              <p>
+                The Push-Relabel algorithm excels in optimizing bandwidth
+                allocation for Amazon's complex, high-density network
+                infrastructure. Its local operation approach makes it
+                particularly suitable for real-time network optimization where
+                rapid response to changing network conditions is crucial for
+                maintaining service quality and customer satisfaction.
+              </p>
+
+              <p><strong>Real-world Application:</strong></p>
+              <ul>
+                <li>
+                  <strong>Dynamic Bandwidth Allocation:</strong> Efficiently
+                  redistributes network capacity in real-time as traffic
+                  patterns change throughout the day.
+                </li>
+                <li>
+                  <strong>High-Density Network Optimization:</strong> Performs
+                  exceptionally well in Amazon's dense network topologies with
+                  many interconnected nodes and redundant paths.
+                </li>
+                <li>
+                  <strong>Congestion Resolution:</strong> Quickly identifies and
+                  resolves network bottlenecks by dynamically adjusting flow
+                  paths based on current capacity constraints.
+                </li>
+                <li>
+                  <strong>Scalable Performance:</strong> Maintains efficiency
+                  even as Amazon's network infrastructure grows, making it ideal
+                  for large-scale cloud operations.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Push-Relabel Code Implementation -->
+          <section class="content-section">
+            <h2>Push-Relabel Algorithm Implementation</h2>
+            <div class="code-container">
+              <div class="code-header">
+                <span class="language-tag">C++ - Push-Relabel Algorithm</span>
+                <button class="expand-btn" onclick="toggleCode('push-code')">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="6,9 12,15 18,9"></polyline>
+                  </svg>
+                  Show Full Code
+                </button>
+                <button class="copy-btn" onclick="copyCode('push-code')">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect
+                      x="9"
+                      y="9"
+                      width="13"
+                      height="13"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <path d="m5 15-4-4 4-4"></path>
+                  </svg>
+                  Copy Code
+                </button>
+              </div>
+              <pre
+                class="code-block collapsed"
+              ><code id="push-code">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+#include &lt;algorithm&gt;
+#include &lt;climits&gt;
+using namespace std;
+
+class PushRelabelNetworkOptimizer {
+private:
+    int numNodes;
+    vector&lt;vector&lt;int&gt;&gt; capacity;
+    vector&lt;vector&lt;int&gt;&gt; flow;
+    vector&lt;int&gt; height;
+    vector&lt;int&gt; excess;
+    vector&lt;vector&lt;int&gt;&gt; adjacencyList;
+
+public:
+    PushRelabelNetworkOptimizer(int nodes) : numNodes(nodes) {
+        capacity.assign(nodes, vector&lt;int&gt;(nodes, 0));
+        flow.assign(nodes, vector&lt;int&gt;(nodes, 0));
+        height.assign(nodes, 0);
+        excess.assign(nodes, 0);
+        adjacencyList.resize(nodes);
+    }
+
+    // Add bidirectional network link
+    void addNetworkLink(int u, int v, int bandwidthCapacity) {
+        capacity[u][v] = bandwidthCapacity;
+        adjacencyList[u].push_back(v);
+        adjacencyList[v].push_back(u);
+    }
+
+    // Push operation: move excess flow from u to v
+    bool push(int u, int v) {
+        if (excess[u] &gt; 0 &amp;&amp; height[u] == height[v] + 1 &amp;&amp; capacity[u][v] - flow[u][v] &gt; 0) {
+            int pushFlow = min(excess[u], capacity[u][v] - flow[u][v]);
+            
+            flow[u][v] += pushFlow;
+            flow[v][u] -= pushFlow;
+            excess[u] -= pushFlow;
+            excess[v] += pushFlow;
+            
+            cout &lt;&lt; "Push: Node " &lt;&lt; u &lt;&lt; " -> Node " &lt;&lt; v 
+                 &lt;&lt; " | Flow: " &lt;&lt; pushFlow &lt;&lt; " Mbps" &lt;&lt; endl;
+            
+            return true;
+        }
+        return false;
+    }
+
+    // Relabel operation: increase height of node u
+    void relabel(int u) {
+        int minHeight = INT_MAX;
+        
+        for (int v : adjacencyList[u]) {
+            if (capacity[u][v] - flow[u][v] &gt; 0) {
+                minHeight = min(minHeight, height[v]);
+            }
+        }
+        
+        if (minHeight &lt; INT_MAX) {
+            height[u] = minHeight + 1;
+            cout &lt;&lt; "Relabel: Node " &lt;&lt; u &lt;&lt; " height increased to " &lt;&lt; height[u] &lt;&lt; endl;
+        }
+    }
+
+    // Discharge operation: process all excess flow from node u
+    void discharge(int u) {
+        while (excess[u] &gt; 0) {
+            bool pushedFlow = false;
+            
+            for (int v : adjacencyList[u]) {
+                if (push(u, v)) {
+                    pushedFlow = true;
+                    break;
+                }
+            }
+            
+            if (!pushedFlow) {
+                relabel(u);
+            }
+        }
+    }
+
+    // Main Push-Relabel algorithm
+    int calculateMaxBandwidth(int source, int sink) {
+        cout &lt;&lt; "=== Amazon Network Bandwidth Optimization (Push-Relabel) ===" &lt;&lt; endl;
+        cout &lt;&lt; "Source: Primary Data Center " &lt;&lt; source &lt;&lt; endl;
+        cout &lt;&lt; "Sink: Customer Endpoint " &lt;&lt; sink &lt;&lt; endl &lt;&lt; endl;
+
+        // Initialize source height and preflow
+        height[source] = numNodes;
+        
+        // Push initial flow from source
+        for (int v : adjacencyList[source]) {
+            if (capacity[source][v] &gt; 0) {
+                flow[source][v] = capacity[source][v];
+                flow[v][source] = -capacity[source][v];
+                excess[v] = capacity[source][v];
+                excess[source] -= capacity[source][v];
+                
+                cout &lt;&lt; "Initial push from source: Node " &lt;&lt; source &lt;&lt; " -> Node " &lt;&lt; v 
+                     &lt;&lt; " | Flow: " &lt;&lt; capacity[source][v] &lt;&lt; " Mbps" &lt;&lt; endl;
+            }
+        }
+
+        cout &lt;&lt; "\n--- Processing excess flows ---" &lt;&lt; endl;
+
+        // Process nodes with excess flow
+        queue&lt;int&gt; activeNodes;
+        vector&lt;bool&gt; inQueue(numNodes, false);
+        
+        for (int i = 0; i &lt; numNodes; i++) {
+            if (i != source &amp;&amp; i != sink &amp;&amp; excess[i] &gt; 0) {
+                activeNodes.push(i);
+                inQueue[i] = true;
+            }
+        }
+
+        while (!activeNodes.empty()) {
+            int u = activeNodes.front();
+            activeNodes.pop();
+            inQueue[u] = false;
+            
+            int oldHeight = height[u];
+            discharge(u);
+            
+            // If height increased, add neighbors to queue
+            if (height[u] &gt; oldHeight) {
+                for (int v : adjacencyList[u]) {
+                    if (v != source &amp;&amp; v != sink &amp;&amp; excess[v] &gt; 0 &amp;&amp; !inQueue[v]) {
+                        activeNodes.push(v);
+                        inQueue[v] = true;
+                    }
+                }
+            }
+        }
+
+        return excess[sink];
+    }
+
+    void displayNetworkStatus() {
+        cout &lt;&lt; "\n=== Network Status Summary ===" &lt;&lt; endl;
+        for (int i = 0; i &lt; numNodes; i++) {
+            cout &lt;&lt; "Node " &lt;&lt; i &lt;&lt; " - Height: " &lt;&lt; height[i] 
+                 &lt;&lt; ", Excess: " &lt;&lt; excess[i] &lt;&lt; " Mbps" &lt;&lt; endl;
+        }
+        cout &lt;&lt; endl;
+    }
+
+    void displayFlowDistribution() {
+        cout &lt;&lt; "=== Final Flow Distribution ===" &lt;&lt; endl;
+        for (int i = 0; i &lt; numNodes; i++) {
+            for (int j = 0; j &lt; numNodes; j++) {
+                if (flow[i][j] &gt; 0) {
+                    cout &lt;&lt; "Node " &lt;&lt; i &lt;&lt; " -> Node " &lt;&lt; j 
+                         &lt;&lt; ": " &lt;&lt; flow[i][j] &lt;&lt; " Mbps" &lt;&lt; endl;
+                }
+            }
+        }
+    }
+};
+
+int main() {
+    /*
+      Amazon Cloud Network Architecture:
+      Node 0: Primary Data Center (Source)
+      Node 1: Regional Hub West
+      Node 2: Regional Hub East
+      Node 3: Edge Server A
+      Node 4: Edge Server B
+      Node 5: Customer Endpoint (Sink)
+    */
+
+    PushRelabelNetworkOptimizer amazonNetwork(6);
+
+    // Configure network infrastructure with bandwidth capacities
+    amazonNetwork.addNetworkLink(0, 1, 120);  // Data Center to West Hub
+    amazonNetwork.addNetworkLink(0, 2, 140);  // Data Center to East Hub
+    amazonNetwork.addNetworkLink(1, 3, 90);   // West Hub to Edge A
+    amazonNetwork.addNetworkLink(1, 4, 70);   // West Hub to Edge B
+    amazonNetwork.addNetworkLink(2, 3, 80);   // East Hub to Edge A
+    amazonNetwork.addNetworkLink(2, 4, 100);  // East Hub to Edge B
+    amazonNetwork.addNetworkLink(3, 5, 130);  // Edge A to Customer
+    amazonNetwork.addNetworkLink(4, 5, 120);  // Edge B to Customer
+
+    int maxBandwidth = amazonNetwork.calculateMaxBandwidth(0, 5);
+    
+    amazonNetwork.displayNetworkStatus();
+    amazonNetwork.displayFlowDistribution();
+    
+    cout &lt;&lt; "\n=== Bandwidth Allocation Results ===" &lt;&lt; endl;
+    cout &lt;&lt; "Optimized maximum bandwidth: " &lt;&lt; maxBandwidth &lt;&lt; " Mbps" &lt;&lt; endl;
+    cout &lt;&lt; "Network performance optimized using Push-Relabel algorithm." &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+            </div>
+          </section>
+        </div>
+
+        <!-- Complexity Analysis Section -->
+        <section class="content-section">
+          <h2>Algorithm Complexity Analysis</h2>
+          <div class="complexity-overview">
+            <p>
+              Comparing Ford-Fulkerson and Push-Relabel algorithms for Amazon's
+              network bandwidth allocation helps determine the optimal approach
+              based on network topology, real-time requirements, and scalability
+              needs.
+            </p>
+          </div>
+
+          <!-- Complexity Comparison Table -->
+          <div class="table-container">
+            <h3>Time & Space Complexity Comparison</h3>
+            <table class="complexity-table">
+              <thead>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Time Complexity</th>
+                  <th>Space Complexity</th>
+                  <th>Network Density</th>
+                  <th>Real-time Suitability</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Ford-Fulkerson Max Flow</strong></td>
+                  <td class="good">O(E × f) where f is max flow</td>
+                  <td class="good">O(V²)</td>
+                  <td class="good">Good for sparse networks</td>
+                  <td class="good">Good</td>
+                </tr>
+                <tr>
+                  <td><strong>Push-Relabel Algorithm</strong></td>
+                  <td class="best">O(V² × E)</td>
+                  <td class="good">O(V²)</td>
+                  <td class="best">Excellent for dense networks</td>
+                  <td class="best">Excellent</td>
+                </tr>
+                <tr>
+                  <td>Edmonds-Karp (BFS variant)</td>
+                  <td class="good">O(V × E²)</td>
+                  <td class="best">O(V²)</td>
+                  <td class="good">Good for general networks</td>
+                  <td class="good">Good</td>
+                </tr>
+                <tr>
+                  <td>Dinic's Algorithm</td>
+                  <td class="best">O(V² × E)</td>
+                  <td class="good">O(V²)</td>
+                  <td class="best">Efficient for layered networks</td>
+                  <td class="best">Very Good</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Amazon Network Scenario Analysis -->
+          <div class="table-container">
+            <h3>Amazon Network Bandwidth Allocation Scenario Analysis</h3>
+            <table class="complexity-table">
+              <thead>
+                <tr>
+                  <th>Network Scenario</th>
+                  <th>Ford-Fulkerson Max Flow</th>
+                  <th>Push-Relabel Algorithm</th>
+                  <th>Best Choice</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>High-Density Data Centers</strong></td>
+                  <td class="good">Handles well with BFS optimization</td>
+                  <td class="best">Excels in dense network topologies</td>
+                  <td>Push-Relabel (optimized for density)</td>
+                </tr>
+                <tr>
+                  <td><strong>Real-time Traffic Routing</strong></td>
+                  <td class="good">Good for path-based routing</td>
+                  <td class="best">Superior local optimization</td>
+                  <td>Push-Relabel (faster response)</td>
+                </tr>
+                <tr>
+                  <td><strong>Simple Network Topologies</strong></td>
+                  <td class="best">Efficient and straightforward</td>
+                  <td class="good">May be overkill for simple cases</td>
+                  <td>Ford-Fulkerson (simpler implementation)</td>
+                </tr>
+                <tr>
+                  <td><strong>Large-scale Cloud Networks</strong></td>
+                  <td class="good">Scalable but may require optimization</td>
+                  <td class="best">Designed for large-scale systems</td>
+                  <td>Push-Relabel (better scalability)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Key Advantages Comparison -->
+          <h3>Algorithm Selection Guide for Amazon Network Operations</h3>
+          <div class="advantages-grid">
+            <div class="advantage-card Segment-Trees">
+              <h4>Ford-Fulkerson Max Flow</h4>
+              <p>
+                <strong>Best for:</strong> Simple network topologies, path-based
+                analysis, educational understanding
+              </p>
+              <p>
+                <strong>Advantages:</strong> Easy to understand and implement,
+                works well for sparse networks, clear path visualization
+              </p>
+            </div>
+            <div class="advantage-card felwick-trees">
+              <h4>Push-Relabel Algorithm</h4>
+              <p>
+                <strong>Best for:</strong> Dense networks, real-time
+                optimization, large-scale cloud infrastructure
+              </p>
+              <p>
+                <strong>Advantages:</strong> Superior performance on dense
+                graphs, better scalability, local optimization approach
+              </p>
+            </div>
+          </div>
+
+          <div class="complexity-note">
+            <strong>Amazon's Network Optimization Strategy:</strong> Use
+            Ford-Fulkerson Max Flow for initial network design and simple
+            routing scenarios where path visualization is important. Deploy
+            Push-Relabel Algorithm for production environments with high-density
+            networks, real-time bandwidth allocation, and large-scale cloud
+            operations. This hybrid approach ensures optimal performance across
+            different network scenarios while maintaining efficiency and
+            scalability.
+          </div>
+        </section>
+      </div>
+
+      <!-- Navigation -->
+      <div class="case-navigation">
+        <a href="case-detail9.html" class="nav-btn prev-btn">← Prev case</a>
+        <a href="index.html" class="nav-btn next-btn">Back to Portfolio</a>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p>&copy; 2024 Abhishek A Joshi - KLE Technological University</p>
+        <p>Algorithmic Problem Solving Portfolio</p>
+      </footer>
+    </div>
+
+    <script>
+      function showAlgorithm(algorithm) {
+        document.querySelectorAll(".algorithm-section").forEach((section) => {
+          section.classList.remove("active");
+        });
+        document.querySelectorAll(".algorithm-btn").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+        document.getElementById(algorithm + "-section").classList.add("active");
+        event.target.classList.add("active");
+      }
+
+      function toggleCode(codeId) {
+        const codeBlock = document
+          .getElementById(codeId)
+          .closest(".code-block");
+        const expandBtn = event.target.closest(".expand-btn");
+        if (codeBlock.classList.contains("collapsed")) {
+          codeBlock.classList.remove("collapsed");
+          expandBtn.innerHTML = `<svg width="16" height="16"><polyline points="18,15 12,9 6,15"/></svg>Hide Code`;
+        } else {
+          codeBlock.classList.add("collapsed");
+          expandBtn.innerHTML = `<svg width="16" height="16"><polyline points="6,9 12,15 18,9"/></svg>Show Full Code`;
+        }
+      }
+
+      function copyCode(codeId) {
+        const codeContent = document.getElementById(codeId).textContent;
+        const copyBtn = event.target.closest(".copy-btn");
+        navigator.clipboard.writeText(codeContent).then(() => {
+          copyBtn.innerHTML = `Copied!`;
+          setTimeout(() => {
+            copyBtn.innerHTML = `Copy Code`;
+          }, 2000);
+        });
+      }
+    </script>
+  </body>
+</html>

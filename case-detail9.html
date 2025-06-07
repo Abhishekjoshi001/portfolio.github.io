@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Duplicate Product Detection - Longest Common Subsequence</title>
+    <link rel="stylesheet" href="case-detail-styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navigation -->
+      <nav class="navigation">
+        <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        <div class="nav-title">Business Case Analysis</div>
+      </nav>
+
+      <!-- Case Header -->
+      <div class="case-header">
+        <div class="case-number">Business Case #9</div>
+        <h1 class="case-title">Duplicate Product Detection</h1>
+        <div class="algorithm-badge">Algorithm: Longest Common Subsequence</div>
+      </div>
+
+      <!-- Case Content -->
+      <div class="case-content">
+        <!-- Business Case Brief -->
+        <section class="content-section">
+          <h2>Business Case Overview</h2>
+          <div class="business-brief">
+            Amazon hosts millions of product listings from thousands of sellers. Often, duplicate or nearly identical
+            products are listed under different names, SKUs, or minor variations. Detecting these duplicates is critical
+            to streamline search results, maintain catalog integrity, and enhance customer experience. By using the
+            Longest Common Subsequence (LCS) algorithm, Amazon identifies textual similarities between product titles,
+            descriptions, and attributes to flag duplicates and unify listings efficiently.
+          </div>
+        </section>
+
+        <!-- Algorithm Explanation -->
+        <section class="content-section">
+          <h2>Algorithm Explanation</h2>
+          <div class="algorithm-explanation">
+            The Longest Common Subsequence (LCS) algorithm determines the longest sequence that appears in the same relative
+            order in two strings but not necessarily contiguously. Unlike substring matching, LCS captures the similarity
+            structure of strings even if they have interleaving differences. It’s particularly useful in natural language
+            processing and record comparison tasks where exact matches are rare but structural similarities indicate duplication.
+          </div>
+
+          <!-- Algorithm Image Placeholder -->
+          <div class="image-container">
+            <img src="gifs and imagees/LCS.webp" class="algorithm-img" />
+            <div>[14] LCS Visualization</div>
+          </div>
+        </section>
+
+        <!-- Business Application -->
+        <section class="content-section">
+          <h2>How This Algorithm Solves the Business Problem</h2>
+          <div class="business-application">
+            Amazon uses LCS to compare incoming product listings with existing catalog data. When a new product is submitted,
+            its title and description are compared to those already in the catalog using LCS. A high LCS score indicates
+            potential duplication, prompting automated or manual verification. This deduplication mechanism enhances
+            the quality of search results, avoids misleading listings, and improves product discoverability by consolidating
+            variants under one unified listing.
+          </div>
+        </section>
+
+        <!-- Code Implementation Section -->
+        <div class="code-container">
+          <div class="code-header">
+            <span class="language-tag">C++</span>
+            <button class="copy-btn" onclick="copyCode()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="m5 15-4-4 4-4"></path>
+              </svg>
+              Copy Code
+            </button>
+          </div>
+          <pre class="code-block"><code id="codeContent">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int longestCommonSubsequence(const string& a, const string& b) {
+    int n = a.length();
+    int m = b.length();
+    vector&lt;vector&lt;int&gt;&gt; dp(n + 1, vector&lt;int&gt;(m + 1, 0));
+
+    for (int i = 1; i &lt;= n; ++i) {
+        for (int j = 1; j &lt;= m; ++j) {
+            if (a[i - 1] == b[j - 1])
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            else
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+        }
+    }
+
+    return dp[n][m];
+}
+
+int main() {
+    string product1 = "Apple iPhone 13 Pro Max - 256GB - Silver";
+    string product2 = "iPhone 13 Pro Max 256GB Silver Apple Smartphone";
+
+    int lcsLength = longestCommonSubsequence(product1, product2);
+    cout &lt;&lt; "LCS Length: " &lt;&lt; lcsLength &lt;&lt; endl;
+
+    double similarity = (2.0 * lcsLength) / (product1.length() + product2.length());
+    cout &lt;&lt; "Similarity Score: " &lt;&lt; similarity * 100 &lt;&lt; "%\n";
+
+    if (similarity &gt; 0.7)
+        cout &lt;&lt; "Potential Duplicate Detected." &lt;&lt; endl;
+    else
+        cout &lt;&lt; "Products Appear Different." &lt;&lt; endl;
+
+    return 0;
+}
+          </code></pre>
+        </div>
+
+        <!-- Complexity Analysis Section -->
+<section class="content-section">
+  <h2>Algorithm Complexity Analysis</h2>
+  <div class="complexity-overview">
+    <p>
+      Efficient detection of duplicate or near-duplicate product listings is essential at Amazon-scale. 
+      The Longest Common Subsequence (LCS) algorithm enables robust text comparison for identifying structural 
+      similarities between millions of product titles and descriptions, minimizing catalog noise and improving 
+      customer experience.
+    </p>
+  </div>
+
+  <!-- Complexity Comparison Table -->
+  <div class="table-container">
+    <h3>Time &amp; Space Complexity Comparison</h3>
+    <table class="complexity-table">
+      <thead>
+        <tr>
+          <th>Algorithm</th>
+          <th>Time Complexity</th>
+          <th>Space Complexity</th>
+          <th>Use Case</th>
+          <th>Scalability</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Longest Common Subsequence (DP)</strong></td>
+          <td class="good">O(N × M)</td>
+          <td class="good">O(N × M)</td>
+          <td>Textual Similarity</td>
+          <td class="good">Good</td>
+        </tr>
+        <tr>
+          <td>Jaccard Similarity</td>
+          <td class="best">O(N + M)</td>
+          <td class="best">O(N + M)</td>
+          <td>Token Set Comparison</td>
+          <td class="best">Excellent</td>
+        </tr>
+        <tr>
+          <td>Hamming Distance</td>
+          <td class="good">O(N)</td>
+          <td class="best">O(1)</td>
+          <td>Equal-length Strings</td>
+          <td class="poor">Limited</td>
+        </tr>
+        <tr>
+          <td>Cosine Similarity (TF-IDF)</td>
+          <td class="good">O(N log N)</td>
+          <td class="good">O(N)</td>
+          <td>Vector-based Comparison</td>
+          <td class="good">Good</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Why LCS Works Well for Amazon -->
+  <div class="table-container">
+    <h3>Amazon Scenario Analysis</h3>
+    <table class="complexity-table">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>LCS (DP)</th>
+          <th>Alternative Methods</th>
+          <th>Impact on Amazon</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Duplicate Detection Accuracy</strong></td>
+          <td class="best">High</td>
+          <td class="good">Moderate</td>
+          <td>Better listing unification</td>
+        </tr>
+        <tr>
+          <td><strong>Computation on Large Dataset</strong></td>
+          <td class="good">Feasible with DP + pruning</td>
+          <td class="poor">High variance</td>
+          <td>Balanced accuracy and speed</td>
+        </tr>
+        <tr>
+          <td><strong>Support for Typo Variants</strong></td>
+          <td class="best">Yes</td>
+          <td class="poor">Often fails</td>
+          <td>Improved customer matching</td>
+        </tr>
+        <tr>
+          <td><strong>Integration with ML Pipelines</strong></td>
+          <td class="good">Simple feature embedding</td>
+          <td class="good">Also usable</td>
+          <td>Hybrid model synergy</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Key Advantages -->
+  <h3>Why LCS Excels in Text-Based Duplication</h3>
+  <div class="advantages-grid">
+    <div class="advantage-card">
+      <h4>🧠 Robust Similarity Detection</h4>
+      <p>
+        Captures structural similarities even with interleaved differences, ideal for product names and attributes.
+      </p>
+    </div>
+    <div class="advantage-card">
+      <h4>🔍 High Accuracy</h4>
+      <p>
+        Offers better match precision than token-based or distance-based methods in complex multilingual listings.
+      </p>
+    </div>
+    <div class="advantage-card">
+      <h4>💡 Explainable Logic</h4>
+      <p>
+        LCS results are interpretable and traceable—important for manual verification and quality assurance.
+      </p>
+    </div>
+    <div class="advantage-card">
+      <h4>🧬 ML Compatible</h4>
+      <p>
+        Easily integrated as a similarity feature in recommendation or classification pipelines.
+      </p>
+    </div>
+  </div>
+
+  <div class="complexity-note">
+    <strong>Real-world Impact:</strong> With LCS-based duplication detection, Amazon reduced catalog redundancy by 28%, 
+    improved product search precision, and accelerated customer decision-making by filtering out noisy listings.
+  </div>
+</section>
+
+<!-- Case Navigation -->
+        <div class="case-navigation">
+          <a class="nav-btn prev-btn" href="case-detail8.html">← Prev case</a>
+          <a class="nav-btn next-btn" href="case-detail10.html">Next Case →</a>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+          <p>&copy; 2024 Abhishek A Joshi - KLE Technological University</p>
+          <p>Algorithmic Problem Solving Portfolio</p>
+        </footer>
+      </div>
+    </div>
+    <script>
+            function toggleCode(codeId) {
+              const codeBlock = document
+                .getElementById(codeId)
+                .closest(".code-block");
+              const expandBtn = event.target.closest(".expand-btn");
+
+              if (codeBlock.classList.contains("collapsed")) {
+                codeBlock.classList.remove("collapsed");
+                expandBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="18,15 12,9 6,15"></polyline>
+                    </svg>
+                    Hide Code
+                `;
+              } else {
+                codeBlock.classList.add("collapsed");
+                expandBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6,9 12,15 18,9"></polyline>
+                    </svg>
+                    Show Full Code
+                `;
+              }
+            }
+            function copyCode() {
+              const codeContent =
+                document.getElementById("codeContent").textContent;
+              const copyBtn = document.querySelector(".copy-btn");
+
+              navigator.clipboard
+                .writeText(codeContent)
+                .then(() => {
+                  // Visual feedback
+                  copyBtn.classList.add("copied");
+                  copyBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"></polyline>
+            </svg>
+            Copied!
+        `;
+
+                  // Reset after 2 seconds
+                  setTimeout(() => {
+                    copyBtn.classList.remove("copied");
+                    copyBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="m5 15-4-4 4-4"></path>
+                </svg>
+                Copy Code
+            `;
+                  }, 2000);
+                })
+                .catch(() => {
+                  // Fallback for older browsers
+                  const textArea = document.createElement("textarea");
+                  textArea.value = codeContent;
+                  document.body.appendChild(textArea);
+                  textArea.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(textArea);
+
+                  copyBtn.textContent = "Copied!";
+                  setTimeout(() => {
+                    copyBtn.textContent = "Copy Code";
+                  }, 2000);
+                });
+            }
+          </script>
+  </body>
+</html>

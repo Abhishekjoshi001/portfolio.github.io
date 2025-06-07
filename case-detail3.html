@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amazon Warehouse Worker-Task Assignment - Optimization Algorithms</title>
+    <link rel="stylesheet" href="case-detail-styles.css" />
+    <style>
+      .hungarian-viz {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cost-matrix {
+            display: grid;
+            grid-template-columns: repeat(5, 80px);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .matrix-cell {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            background: white;
+            font-weight: bold;
+            transition: all 0.5s ease;
+        }
+
+        .matrix-header {
+            background: #3498db;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .matrix-cell.selected {
+            background: #e74c3c;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .matrix-cell.reduced {
+            background: #f39c12;
+            color: white;
+        }
+
+        /* Greedy Algorithm Visualization */
+        .greedy-viz {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .assignment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-height: 200px;
+        }
+
+        .assignment-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 10px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideIn 0.8s ease forwards;
+        }
+
+        .assignment-item:nth-child(1) { animation-delay: 0.5s; }
+        .assignment-item:nth-child(2) { animation-delay: 1s; }
+        .assignment-item:nth-child(3) { animation-delay: 1.5s; }
+        .assignment-item:nth-child(4) { animation-delay: 2s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .worker-task {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .cost-badge {
+            background: #27ae60;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
+        /* Progress Animation */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 2s ease;
+            border-radius: 4px;
+        }
+
+        .step-indicator {
+            text-align: center;
+            font-size: 1.1em;
+            color: #7f8c8d;
+            margin: 10px 0;
+        }
+
+        /* Animation keyframes for Hungarian Algorithm */
+        @keyframes highlightCell {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); box-shadow: 0 0 20px rgba(52, 152, 219, 0.8); }
+            100% { transform: scale(1.1); }
+        }
+
+        .matrix-cell.animated {
+            animation: highlightCell 1s ease-in-out;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .cost-matrix {
+                grid-template-columns: repeat(5, 60px);
+                gap: 5px;
+            }
+            
+            .matrix-cell {
+                width: 50px;
+                height: 50px;
+                font-size: 0.9em;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+          }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navigation -->
+      <nav class="navigation">
+        <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        <div class="nav-title">Business Case Analysis</div>
+      </nav>
+
+      <!-- Case Header -->
+      <div class="case-header">
+        <div class="case-number">Business Case #3</div>
+        <h1 class="case-title">Amazon Warehouse Worker-Task Assignment</h1>
+        <div class="algorithm-badges">
+          <div class="algorithm-badge">Algorithm 1: Hungarian Algorithm</div>
+          <div class="algorithm-badge">Algorithm 2: Greedy Assignment</div>
+        </div>
+      </div>
+
+      <!-- Case Content -->
+      <div class="case-content">
+        <!-- Business Case Brief -->
+        <section class="content-section">
+          <h2>Business Case Overview</h2>
+          <div class="business-brief">
+            <p>Amazon's fulfillment centers process millions of orders daily, requiring optimal assignment of warehouse workers to various tasks such as picking, packing, sorting, and quality control. The challenge lies in matching workers with different skill levels, experience, and physical capabilities to tasks that vary in complexity, urgency, and location within the warehouse.</p>
+            
+            <p><strong>Key Challenges:</strong></p>
+            <ul>
+              <li>Minimizing total completion time across all tasks</li>
+              <li>Balancing workload distribution among workers</li>
+              <li>Accounting for worker skill specializations and efficiency ratings</li>
+              <li>Handling dynamic task priorities and real-time reassignments</li>
+              <li>Reducing worker fatigue and maximizing productivity</li>
+            </ul>
+
+            <p><strong>Business Impact:</strong> Poor task assignment can lead to 20-30% reduction in warehouse efficiency, delayed shipments, increased labor costs, and reduced customer satisfaction.</p>
+          </div>
+        </section>
+
+        <!-- Algorithm Selection Buttons -->
+        <section class="content-section">
+          <h2>Algorithm Comparison</h2>
+          <div class="algorithm-selector">
+            <button class="algorithm-btn active" onclick="showAlgorithm('hungarian', event)">Hungarian Algorithm</button>
+            <button class="algorithm-btn" onclick="showAlgorithm('greedy', event)">Greedy Assignment</button>
+          </div>
+        </section>
+
+        <!-- Hungarian Algorithm Section -->
+        <div id="hungarian-section" class="algorithm-section active">
+          <section class="content-section">
+            <h2>Hungarian Algorithm Explanation</h2>
+            <div class="algorithm-explanation">
+              <p>The Hungarian Algorithm is an optimal assignment algorithm that solves the assignment problem in polynomial time. It finds the minimum-cost perfect matching in a bipartite graph, making it ideal for assigning workers to tasks when we need the globally optimal solution.</p>
+              
+              <p><strong>How it works:</strong></p>
+              <ol>
+                <li>Create a cost matrix where each cell (i,j) represents the cost/time for worker i to complete task j</li>
+                <li>Subtract the minimum value in each row from all elements in that row</li>
+                <li>Subtract the minimum value in each column from all elements in that column</li>
+                <li>Cover all zeros with minimum number of lines</li>
+                <li>If lines < n, adjust matrix and repeat; otherwise, find optimal assignment</li>
+              </ol>
+            </div>
+
+            <!-- Algorithm Image Placeholder -->
+            <div class="visualization-section">
+            <!-- <h2 class="section-title">🎯 Hungarian Algorithm - Optimal Assignment</h2> -->
+            <div class="hungarian-viz">
+                <div class="step-indicator" id="hungarian-step">Step 1: Initial Cost Matrix</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="hungarian-progress"></div>
+                </div>
+                
+                <div class="cost-matrix" id="hungarian-matrix">
+                    <div class="matrix-cell matrix-header"></div>
+                    <div class="matrix-cell matrix-header">Pick</div>
+                    <div class="matrix-cell matrix-header">Pack</div>
+                    <div class="matrix-cell matrix-header">Sort</div>
+                    <div class="matrix-cell matrix-header">QC</div>
+                    
+                    <div class="matrix-cell matrix-header">Worker 1</div>
+                    <div class="matrix-cell" data-cost="25">25</div>
+                    <div class="matrix-cell" data-cost="40">40</div>
+                    <div class="matrix-cell" data-cost="35">35</div>
+                    <div class="matrix-cell" data-cost="30">30</div>
+                    
+                    <div class="matrix-cell matrix-header">Worker 2</div>
+                    <div class="matrix-cell" data-cost="40">40</div>
+                    <div class="matrix-cell" data-cost="20">20</div>
+                    <div class="matrix-cell" data-cost="30">30</div>
+                    <div class="matrix-cell" data-cost="35">35</div>
+                    
+                    <div class="matrix-cell matrix-header">Worker 3</div>
+                    <div class="matrix-cell" data-cost="35">35</div>
+                    <div class="matrix-cell" data-cost="30">30</div>
+                    <div class="matrix-cell" data-cost="25">25</div>
+                    <div class="matrix-cell" data-cost="40">40</div>
+                    
+                    <div class="matrix-cell matrix-header">Worker 4</div>
+                    <div class="matrix-cell" data-cost="30">30</div>
+                    <div class="matrix-cell" data-cost="35">35</div>
+                    <div class="matrix-cell" data-cost="40">40</div>
+                    <div class="matrix-cell" data-cost="20">20</div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="runHungarianAnimation()">▶️ Run Hungarian Algorithm</button>
+                    <button class="btn btn-success" onclick="resetHungarian()">🔄 Reset</button>
+                </div>
+            </div>
+        </div>
+          </section>
+
+          <!-- Business Application for Hungarian -->
+          <section class="content-section">
+            <h2>How Hungarian Algorithm Solves Amazon's Problem</h2>
+            <div class="business-application">
+              <p>The Hungarian Algorithm provides the mathematically optimal assignment of workers to tasks, ensuring minimum total completion time and maximum warehouse efficiency.</p>
+              
+              <p><strong>Real-world Application:</strong></p>
+              <ul>
+                <li><strong>Shift Planning:</strong> Optimal assignment of 200+ workers to daily tasks at fulfillment center startup</li>
+                <li><strong>Skill-based Matching:</strong> Assigns experienced workers to complex tasks (fragile items, high-value products)</li>
+                <li><strong>Cost Minimization:</strong> Reduces overall labor hours by 15-20% through optimal matching</li>
+                <li><strong>Quality Assurance:</strong> Ensures critical tasks are assigned to most qualified workers</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Hungarian Code Implementation -->
+          <section class="content-section">
+                    <h2>Hungarian Algorithm Implementation</h2>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="language-tag">C++ - Hungarian Algorithm </span>
+                            <button class="expand-btn" onclick="toggleCode('hungarian-code', event)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="6,9 12,15 18,9"></polyline>
+                                </svg>
+                                Show Full Code
+                            </button>
+                            <button class="copy-btn" onclick="copyCode('hungarian-code', event)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="m5 15-4-4 4-4"></path>
+                                </svg>
+                                Copy Code
+                            </button>
+                        </div>
+              <pre class="code-block collapsed"><code id="hungarian-code">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;climits&gt;
+#include &lt;algorithm&gt;
+
+class HungarianAlgorithm {
+private:
+    int n;
+    std::vector&lt;std::vector&lt;int&gt;&gt; cost;
+    std::vector&lt;int&gt; assignment;
+    
+public:
+    HungarianAlgorithm(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; costMatrix) {
+        n = costMatrix.size();
+        cost = costMatrix;
+        assignment.resize(n, -1);
+    }
+    
+    int solve() {
+        // Step 1: Subtract row minimums
+        for (int i = 0; i &lt; n; i++) {
+            int minVal = *std::min_element(cost[i].begin(), cost[i].end());
+            for (int j = 0; j &lt; n; j++) {
+                cost[i][j] -= minVal;
+            }
+        }
+        
+        // Step 2: Subtract column minimums
+        for (int j = 0; j &lt; n; j++) {
+            int minVal = INT_MAX;
+            for (int i = 0; i &lt; n; i++) {
+                minVal = std::min(minVal, cost[i][j]);
+            }
+            for (int i = 0; i &lt; n; i++) {
+                cost[i][j] -= minVal;
+            }
+        }
+        
+        // Step 3: Find optimal assignment using augmenting paths
+        std::vector&lt;int&gt; u(n + 1), v(n + 1), p(n + 1), way(n + 1);
+        
+        for (int i = 1; i &lt;= n; ++i) {
+            p[0] = i;
+            int j0 = 0;
+            std::vector&lt;int&gt; minv(n + 1, INT_MAX);
+            std::vector&lt;bool&gt; used(n + 1, false);
+            
+            do {
+                used[j0] = true;
+                int i0 = p[j0], delta = INT_MAX, j1;
+                
+                for (int j = 1; j &lt;= n; ++j) {
+                    if (!used[j]) {
+                        int cur = cost[i0 - 1][j - 1] - u[i0] - v[j];
+                        if (cur &lt; minv[j]) {
+                            minv[j] = cur;
+                            way[j] = j0;
+                        }
+                        if (minv[j] &lt; delta) {
+                            delta = minv[j];
+                            j1 = j;
+                        }
+                    }
+                }
+                
+                for (int j = 0; j &lt;= n; ++j) {
+                    if (used[j]) {
+                        u[p[j]] += delta;
+                        v[j] -= delta;
+                    } else {
+                        minv[j] -= delta;
+                    }
+                }
+                j0 = j1;
+            } while (p[j0] != 0);
+            
+            do {
+                int j1 = way[j0];
+                p[j0] = p[j1];
+                j0 = j1;
+            } while (j0);
+        }
+        
+        // Extract assignment and calculate total cost
+        int totalCost = 0;
+        for (int j = 1; j &lt;= n; ++j) {
+            assignment[p[j] - 1] = j - 1;
+            totalCost += cost[p[j] - 1][j - 1];
+        }
+        
+        return totalCost;
+    }
+    
+    void printAssignment() {
+        std::cout &lt;&lt; "Optimal Worker-Task Assignment:\n";
+        for (int i = 0; i &lt; n; i++) {
+            std::cout &lt;&lt; "Worker " &lt;&lt; i + 1 &lt;&lt; " → Task " 
+                      &lt;&lt; assignment[i] + 1 &lt;&lt; "\n";
+        }
+    }
+};
+
+// Example usage for Amazon warehouse
+int main() {
+    // Cost matrix: workers × tasks (completion time in minutes)
+    std::vector&lt;std::vector&lt;int&gt;&gt; warehouseCosts = {
+        {25, 40, 35, 30}, // Worker 1: Pick, Pack, Sort, QC
+        {40, 20, 30, 35}, // Worker 2: Pick, Pack, Sort, QC  
+        {35, 30, 25, 40}, // Worker 3: Pick, Pack, Sort, QC
+        {30, 35, 40, 20}  // Worker 4: Pick, Pack, Sort, QC
+    };
+    
+    HungarianAlgorithm optimizer(warehouseCosts);
+    int minTime = optimizer.solve();
+    
+    std::cout &lt;&lt; "Minimum total completion time: " 
+              &lt;&lt; minTime &lt;&lt; " minutes\n";
+    optimizer.printAssignment();
+    
+    return 0;
+}</code></pre>
+            </div>
+          </section>
+        </div>
+
+        <!-- Greedy Algorithm Section -->
+        <div id="greedy-section" class="algorithm-section">
+          <section class="content-section">
+            <h2>Greedy Assignment Algorithm Explanation</h2>
+            <div class="algorithm-explanation">
+              <p>The Greedy Assignment Algorithm provides a fast, heuristic solution by making locally optimal choices at each step. While not guaranteeing global optimality, it's ideal for real-time reassignments and large-scale operations where speed is crucial.</p>
+              
+              <p><strong>How it works:</strong></p>
+              <ol>
+                <li>Sort all worker-task pairs by their cost/efficiency</li>
+                <li>Greedily assign the best available worker-task pair</li>
+                <li>Mark both worker and task as assigned</li>
+                <li>Repeat until all assignments are made</li>
+              </ol>
+            </div>
+
+            <!-- Algorithm Image Placeholder -->
+            <div class="visualization-section">
+            <!-- <h2 class="section-title">⚡ Greedy Assignment - Fast Solution</h2> -->
+            <div class="greedy-viz">
+                <div class="step-indicator" id="greedy-step">Ready to assign tasks greedily</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="greedy-progress"></div>
+                </div>
+                
+                <div class="assignment-list" id="greedy-assignments">
+                    <!-- Assignments will be populated by JavaScript -->
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="runGreedyAnimation()">▶️ Run Greedy Assignment</button>
+                    <button class="btn btn-success" onclick="resetGreedy()">🔄 Reset</button>
+                </div>
+            </div>
+        </div>
+          </section>
+
+          <!-- Business Application for Greedy -->
+          <section class="content-section">
+            <h2>How Greedy Assignment Solves Amazon's Problem</h2>
+            <div class="business-application">
+              <p>The Greedy Assignment Algorithm excels in dynamic warehouse environments where quick decisions are needed and near-optimal solutions are acceptable.</p>
+              
+              <p><strong>Real-world Application:</strong></p>
+              <ul>
+                <li><strong>Real-time Reassignment:</strong> Quickly reassigns tasks when workers call in sick or new urgent orders arrive</li>
+                <li><strong>Peak Season Handling:</strong> Rapidly assigns temporary workers during holiday rush periods</li>
+                <li><strong>Load Balancing:</strong> Distributes workload efficiently as tasks are completed throughout the day</li>
+                <li><strong>Scalable Solution:</strong> Handles thousands of workers and tasks with minimal computational overhead</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Greedy Code Implementation -->
+          <section class="content-section">
+                    <h2>Greedy Algorithm Implementation</h2>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="language-tag">C++ - Greedy Algorithm</span>
+                            <button class="expand-btn" onclick="toggleCode('hungarian-code', event)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="6,9 12,15 18,9"></polyline>
+                                </svg>
+                                Show Full Code
+                            </button>
+                            <button class="copy-btn" onclick="copyCode('hungarian-code', event)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="m5 15-4-4 4-4"></path>
+                                </svg>
+                                Copy Code
+                            </button>
+                        </div>
+              <pre class="code-block collapsed"><code id="greedy-code">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;queue&gt;
+
+struct Assignment {
+    int worker;
+    int task;
+    int cost;
+    
+    Assignment(int w, int t, int c) : worker(w), task(t), cost(c) {}
+    
+    bool operator&gt;(const Assignment&amp; other) const {
+        return cost &gt; other.cost; // Min-heap
+    }
+};
+
+class GreedyAssignment {
+private:
+    int n;
+    std::vector&lt;std::vector&lt;int&gt;&gt; cost;
+    std::vector&lt;int&gt; workerAssignment;
+    std::vector&lt;int&gt; taskAssignment;
+    
+public:
+    GreedyAssignment(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; costMatrix) {
+        n = costMatrix.size();
+        cost = costMatrix;
+        workerAssignment.resize(n, -1);
+        taskAssignment.resize(n, -1);
+    }
+    
+    int solve() {
+        // Create priority queue of all possible assignments
+        std::priority_queue&lt;Assignment, std::vector&lt;Assignment&gt;, std::greater&lt;Assignment&gt;&gt; pq;
+        
+        for (int i = 0; i &lt; n; i++) {
+            for (int j = 0; j &lt; n; j++) {
+                pq.push(Assignment(i, j, cost[i][j]));
+            }
+        }
+        
+        std::vector&lt;bool&gt; workerUsed(n, false);
+        std::vector&lt;bool&gt; taskUsed(n, false);
+        int totalCost = 0;
+        int assignments = 0;
+        
+        // Greedily assign best available worker-task pairs
+        while (!pq.empty() &amp;&amp; assignments &lt; n) {
+            Assignment current = pq.top();
+            pq.pop();
+            
+            if (!workerUsed[current.worker] &amp;&amp; !taskUsed[current.task]) {
+                workerAssignment[current.worker] = current.task;
+                taskAssignment[current.task] = current.worker;
+                workerUsed[current.worker] = true;
+                taskUsed[current.task] = true;
+                totalCost += current.cost;
+                assignments++;
+            }
+        }
+        
+        return totalCost;
+    }
+    
+    int solveWithWorkloadBalance() {
+        // Enhanced greedy with workload balancing
+        std::vector&lt;int&gt; workerLoad(n, 0);
+        std::vector&lt;bool&gt; taskUsed(n, false);
+        int totalCost = 0;
+        
+        for (int round = 0; round &lt; n; round++) {
+            int bestWorker = -1, bestTask = -1;
+            int bestCost = INT_MAX;
+            double bestScore = INT_MAX;
+            
+            // Find best worker-task pair considering workload balance
+            for (int i = 0; i &lt; n; i++) {
+                if (workerAssignment[i] != -1) continue;
+                
+                for (int j = 0; j &lt; n; j++) {
+                    if (taskUsed[j]) continue;
+                    
+                    // Score combines cost and workload balance
+                    double score = cost[i][j] + (workerLoad[i] * 0.1);
+                    
+                    if (score &lt; bestScore) {
+                        bestScore = score;
+                        bestWorker = i;
+                        bestTask = j;
+                        bestCost = cost[i][j];
+                    }
+                }
+            }
+            
+            if (bestWorker != -1) {
+                workerAssignment[bestWorker] = bestTask;
+                taskAssignment[bestTask] = bestWorker;
+                taskUsed[bestTask] = true;
+                workerLoad[bestWorker] += bestCost;
+                totalCost += bestCost;
+            }
+        }
+        
+        return totalCost;
+    }
+    
+    void printAssignment() {
+        std::cout &lt;&lt; "Greedy Worker-Task Assignment:\n";
+        for (int i = 0; i &lt; n; i++) {
+            if (workerAssignment[i] != -1) {
+                std::cout &lt;&lt; "Worker " &lt;&lt; i + 1 &lt;&lt; " → Task " 
+                          &lt;&lt; workerAssignment[i] + 1 &lt;&lt; " (Cost: " 
+                          &lt;&lt; cost[i][workerAssignment[i]] &lt;&lt; ")\n";
+            }
+        }
+    }
+    
+    void printWorkloadDistribution() {
+        std::cout &lt;&lt; "\nWorkload Distribution:\n";
+        std::vector&lt;int&gt; workload(n, 0);
+        for (int i = 0; i &lt; n; i++) {
+            if (workerAssignment[i] != -1) {
+                workload[i] = cost[i][workerAssignment[i]];
+            }
+        }
+        
+        for (int i = 0; i &lt; n; i++) {
+            std::cout &lt;&lt; "Worker " &lt;&lt; i + 1 &lt;&lt; ": " 
+                      &lt;&lt; workload[i] &lt;&lt; " minutes\n";
+        }
+    }
+};
+
+// Real-time assignment system for Amazon warehouse
+class RealTimeAssignment {
+private:
+    GreedyAssignment* assignment;
+    std::vector&lt;bool&gt; availableWorkers;
+    std::vector&lt;bool&gt; pendingTasks;
+    
+public:
+    RealTimeAssignment(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; costs) {
+        assignment = new GreedyAssignment(costs);
+        availableWorkers.resize(costs.size(), true);
+        pendingTasks.resize(costs.size(), true);
+    }
+    
+    void reassignTask(int completedTask, int newTask) {
+        std::cout &lt;&lt; "Task " &lt;&lt; completedTask + 1 &lt;&lt; " completed.\n";
+        std::cout &lt;&lt; "Reassigning to new task " &lt;&lt; newTask + 1 &lt;&lt; "...\n";
+        // Quick reassignment logic for dynamic warehouse operations
+    }
+    
+    ~RealTimeAssignment() {
+        delete assignment;
+    }
+};
+
+int main() {
+    // Amazon warehouse scenario: 4 workers, 4 task types
+    std::vector&lt;std::vector&lt;int&gt;&gt; warehouseCosts = {
+        {25, 40, 35, 30}, // Worker 1: Pick, Pack, Sort, QC
+        {40, 20, 30, 35}, // Worker 2: Pick, Pack, Sort, QC  
+        {35, 30, 25, 40}, // Worker 3: Pick, Pack, Sort, QC
+        {30, 35, 40, 20}  // Worker 4: Pick, Pack, Sort, QC
+    };
+    
+    GreedyAssignment greedyOptimizer(warehouseCosts);
+    
+    std::cout &lt;&lt; "=== Standard Greedy Assignment ===\n";
+    int greedyCost = greedyOptimizer.solve();
+    std::cout &lt;&lt; "Total completion time: " &lt;&lt; greedyCost &lt;&lt; " minutes\n";
+    greedyOptimizer.printAssignment();
+    
+    // Reset for balanced assignment
+    GreedyAssignment balancedOptimizer(warehouseCosts);
+    std::cout &lt;&lt; "\n=== Workload-Balanced Greedy Assignment ===\n";
+    int balancedCost = balancedOptimizer.solveWithWorkloadBalance();
+    std::cout &lt;&lt; "Total completion time: " &lt;&lt; balancedCost &lt;&lt; " minutes\n";
+    balancedOptimizer.printAssignment();
+    balancedOptimizer.printWorkloadDistribution();
+    
+    return 0;
+}</code></pre>
+            </div>
+          </section>
+        </div>
+
+        <!-- Complexity Analysis Section -->
+        <section class="content-section">
+          <h2>Algorithm Complexity Analysis</h2>
+          <div class="complexity-overview">
+            <p>Comparing both algorithms for Amazon's warehouse operations helps determine the best approach based on warehouse size, time constraints, and optimality requirements.</p>
+          </div>
+
+          <!-- Complexity Comparison Table -->
+          <div class="table-container">
+            <h3>Time & Space Complexity Comparison</h3>
+            <table class="complexity-table">
+              <thead>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Time Complexity</th>
+                  <th>Space Complexity</th>
+                  <th>Optimality</th>
+                  <th>Real-time Suitability</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Hungarian Algorithm</strong></td>
+                  <td class="good">O(n³)</td>
+                  <td class="best">O(n²)</td>
+                  <td class="best">Optimal</td>
+                  <td class="poor">Limited</td>
+                </tr>
+                <tr>
+                  <td><strong>Greedy Assignment</strong></td>
+                  <td class="best">O(n² log n)</td>
+                  <td class="best">O(n²)</td>
+                  <td class="good">Near-optimal</td>
+                  <td class="best">Excellent</td>
+                </tr>
+                <tr>
+                  <td>Brute Force</td>
+                  <td class="poor">O(n!)</td>
+                  <td class="good">O(n)</td>
+                  <td class="best">Optimal</td>
+                  <td class="poor">Unusable</td>
+                </tr>
+                <tr>
+                  <td>Random Assignment</td>
+                  <td class="best">O(n)</td>
+                  <td class="best">O(n)</td>
+                  <td class="poor">Poor</td>
+                  <td class="best">Instant</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Amazon Warehouse Scenario Analysis -->
+          <div class="table-container">
+            <h3>Amazon Warehouse Performance Analysis</h3>
+            <table class="complexity-table">
+              <thead>
+                <tr>
+                  <th>Scenario</th>
+                  <th>Hungarian Algorithm</th>
+                  <th>Greedy Assignment</th>
+                  <th>Best Choice</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Morning Shift Planning (200 workers)</strong></td>
+                  <td class="good">~8 seconds, Optimal</td>
+                  <td class="best">~2 seconds, 95% optimal</td>
+                  <td>Hungarian (time available)</td>
+                </tr>
+                <tr>
+                  <td><strong>Real-time Reassignment</strong></td>
+                  <td class="poor">Too slow for dynamic changes</td>
+                  <td class="best">Instant response</td>
+                  <td>Greedy (speed critical)</td>
+                </tr>
+                <tr>
+                  <td><strong>Peak Season (500+ workers)</strong></td>
+                  <td class="poor">~45 seconds</td>
+                  <td class="best">~8 seconds</td>
+                  <td>Greedy (scalability)</td>
+                </tr>
+                <tr>
+                  <td><strong>High-value Item Processing</strong></td>
+                  <td class="best">Perfect skill matching</td>
+                  <td class="good">Good skill matching</td>
+                  <td>Hungarian (quality critical)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Key Advantages Comparison -->
+          <h3>Algorithm Selection Guide for Amazon Operations</h3>
+          <div class="advantages-grid">
+            <div class="advantage-card hungarian">
+              <h4>🎯 Hungarian Algorithm</h4>
+              <p><strong>Best for:</strong> Shift planning, optimal resource utilization, high-value operations</p>
+              <p><strong>Guarantees:</strong> Mathematically optimal assignments, minimizes total cost</p>
+            </div>
+            <div class="advantage-card greedy">
+              <h4>⚡ Greedy Assignment</h4>
+              <p><strong>Best for:</strong> Real-time operations, large-scale assignments, dynamic reassignments</p>
+              <p><strong>Advantages:</strong> Fast execution, good results, handles uncertainty well</p>
+            </div>
+          </div>
+
+          <div class="complexity-note">
+            <strong>Amazon's Hybrid Approach:</strong> Use Hungarian Algorithm for daily shift planning (optimal long-term efficiency) and Greedy Assignment for real-time adjustments (operational flexibility). This combination achieves 98% of optimal efficiency while maintaining operational agility.
+          </div>
+        </section>
+
+        <!-- Case Navigation -->
+        <div class="case-navigation">
+          <a href="case-detail2.html" class="nav-btn prev-btn">← Prev case</a>
+          <a href="case-detail4.html" class="nav-btn next-btn">Next Case →</a>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+          <p>&copy; 2024 Abhishek A Joshi - KLE Technological University</p>
+          <p>Algorithmic Problem Solving Portfolio</p>
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      let hungarianStep = 0;
+        const hungarianSteps = [
+            "Step 1: Initial Cost Matrix",
+            "Step 2: Subtract row minimums",
+            "Step 3: Subtract column minimums", 
+            "Step 4: Find optimal assignment",
+            "Step 5: Complete! Optimal solution found"
+        ];
+
+        function runHungarianAnimation() {
+            hungarianStep = 0;
+            const progressBar = document.getElementById('hungarian-progress');
+            const stepIndicator = document.getElementById('hungarian-step');
+            const matrix = document.getElementById('hungarian-matrix');
+            
+            // Reset matrix
+            matrix.querySelectorAll('.matrix-cell:not(.matrix-header)').forEach(cell => {
+                cell.classList.remove('selected', 'reduced', 'animated');
+            });
+            
+            let currentStep = 0;
+            const stepInterval = setInterval(() => {
+                if (currentStep >= hungarianSteps.length) {
+                    clearInterval(stepInterval);
+                    return;
+                }
+                
+                stepIndicator.textContent = hungarianSteps[currentStep];
+                progressBar.style.width = ((currentStep + 1) / hungarianSteps.length) * 100 + '%';
+                
+                // Animate based on step
+                switch(currentStep) {
+                    case 1: // Row reduction
+                        animateRowReduction();
+                        break;
+                    case 2: // Column reduction
+                        animateColumnReduction();
+                        break;
+                    case 3: // Find assignment
+                        animateOptimalAssignment();
+                        break;
+                }
+                
+                currentStep++;
+            }, 2000);
+        }
+
+        function animateRowReduction() {
+            const rows = [
+                [1, 2, 3, 4], // Worker 1 cells
+                [6, 7, 8, 9], // Worker 2 cells
+                [11, 12, 13, 14], // Worker 3 cells
+                [16, 17, 18, 19]  // Worker 4 cells
+            ];
+            
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.forEach(cellIndex => {
+                        const cell = document.querySelector(`#hungarian-matrix .matrix-cell:nth-child(${cellIndex + 1})`);
+                        cell.classList.add('reduced', 'animated');
+                    });
+                }, index * 500);
+            });
+        }
+
+        function animateColumnReduction() {
+            const columns = [
+                [1, 6, 11, 16], // Pick column
+                [2, 7, 12, 17], // Pack column
+                [3, 8, 13, 18], // Sort column
+                [4, 9, 14, 19]  // QC column
+            ];
+            
+            columns.forEach((col, index) => {
+                setTimeout(() => {
+                    col.forEach(cellIndex => {
+                        const cell = document.querySelector(`#hungarian-matrix .matrix-cell:nth-child(${cellIndex + 1})`);
+                        cell.classList.add('animated');
+                    });
+                }, index * 400);
+            });
+        }
+
+        function animateOptimalAssignment() {
+            // Simulate optimal assignment: Worker1→Pick, Worker2→Pack, Worker3→Sort, Worker4→QC
+            const optimalCells = [1, 7, 13, 19]; // Indices for optimal assignment
+            
+            optimalCells.forEach((cellIndex, index) => {
+                setTimeout(() => {
+                    const cell = document.querySelector(`#hungarian-matrix .matrix-cell:nth-child(${cellIndex + 1})`);
+                    cell.classList.remove('reduced');
+                    cell.classList.add('selected', 'animated');
+                }, index * 600);
+            });
+        }
+
+        function resetHungarian() {
+            const matrix = document.getElementById('hungarian-matrix');
+            matrix.querySelectorAll('.matrix-cell:not(.matrix-header)').forEach(cell => {
+                cell.classList.remove('selected', 'reduced', 'animated');
+            });
+            
+            document.getElementById('hungarian-progress').style.width = '0%';
+            document.getElementById('hungarian-step').textContent = hungarianSteps[0];
+        }
+
+        // Greedy Algorithm Animation
+        function runGreedyAnimation() {
+            const assignmentsList = document.getElementById('greedy-assignments');
+            const progressBar = document.getElementById('greedy-progress');
+            const stepIndicator = document.getElementById('greedy-step');
+            
+            // Clear previous assignments
+            assignmentsList.innerHTML = '';
+            progressBar.style.width = '0%';
+            
+            const assignments = [
+                { worker: 'Worker 2', task: 'Pack', cost: 20 },
+                { worker: 'Worker 4', task: 'QC', cost: 20 },
+                { worker: 'Worker 3', task: 'Sort', cost: 25 },
+                { worker: 'Worker 1', task: 'Pick', cost: 25 }
+            ];
+            
+            stepIndicator.textContent = 'Finding best assignments greedily...';
+            
+            assignments.forEach((assignment, index) => {
+                setTimeout(() => {
+                    const assignmentItem = document.createElement('div');
+                    assignmentItem.className = 'assignment-item';
+                    assignmentItem.innerHTML = `
+                        <div class="worker-task">${assignment.worker} → ${assignment.task}</div>
+                        <div class="cost-badge">${assignment.cost} min</div>
+                    `;
+                    assignmentsList.appendChild(assignmentItem);
+                    
+                    // Update progress
+                    progressBar.style.width = ((index + 1) / assignments.length) * 100 + '%';
+                    
+                    if (index === assignments.length - 1) {
+                        setTimeout(() => {
+                            stepIndicator.textContent = 'Greedy assignment complete! Total: 90 minutes';
+                        }, 500);
+                    }
+                }, index * 1200);
+            });
+        }
+
+        function resetGreedy() {
+            document.getElementById('greedy-assignments').innerHTML = '';
+            document.getElementById('greedy-progress').style.width = '0%';
+            document.getElementById('greedy-step').textContent = 'Ready to assign tasks greedily';
+        }
+
+        // Auto-start animations on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                runHungarianAnimation();
+            }, 1000);
+            
+            setTimeout(() => {
+                runGreedyAnimation();
+            }, 8000);
+        });
+        // Algorithm switching functionality
+        function showAlgorithm(algorithm, event) {
+            // Hide all algorithm sections
+            document.querySelectorAll('.algorithm-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Hide all algorithm buttons active state
+            document.querySelectorAll('.algorithm-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected algorithm section
+            document.getElementById(algorithm + '-section').classList.add('active');
+
+            // Activate selected button
+            event.target.classList.add('active');
+        }
+
+        // Toggle code expansion functionality
+        function toggleCode(codeId, event) {
+            const codeBlock = document.getElementById(codeId).closest('.code-block');
+            const expandBtn = event.target.closest('.expand-btn');
+            
+            if (codeBlock.classList.contains('collapsed')) {
+                codeBlock.classList.remove('collapsed');
+                expandBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="18,15 12,9 6,15"></polyline>
+                    </svg>
+                    Hide Code
+                `;
+            } else {
+                codeBlock.classList.add('collapsed');
+                expandBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6,9 12,15 18,9"></polyline>
+                    </svg>
+                    Show Full Code
+                `;
+            }
+        }
+
+        // Copy code functionality
+        function copyCode(codeId, event) {
+            const codeContent = document.getElementById(codeId).textContent;
+            const copyBtn = event.target.closest('.copy-btn');
+
+            navigator.clipboard.writeText(codeContent).then(() => {
+                // Visual feedback
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"></polyline>
+            </svg>
+            Copied!
+          `;
+
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="m5 15-4-4 4-4"></path>
+              </svg>
+              Copy Code
+            `;
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement("textarea");
+                textArea.value = codeContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+
+                copyBtn.textContent = "Copied!";
+                setTimeout(() => {
+                    copyBtn.textContent = "Copy Code";
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

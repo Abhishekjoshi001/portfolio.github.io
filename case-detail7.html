@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real-time Inventory Tracking - Optimization Algorithms</title>
+  <link rel="stylesheet" href="case-detail-styles.css" />
+</head>
+
+<body>
+  <div class="container">
+    <!-- Navigation -->
+    <nav class="navigation">
+      <a href="index.html" class="back-btn">← Back to Portfolio</a>
+      <div class="nav-title">Business Case Analysis</div>
+    </nav>
+
+    <!-- Case Header -->
+    <div class="case-header">
+      <div class="case-number">Business Case #7</div>
+      <h1 class="case-title">Real time inventory tracking</h1>
+      <div class="algorithm-badges">
+        <div class="algorithm-badge">Algorithm 1: Segment Trees</div>
+        <div class="algorithm-badge">Algorithm 2: Fenwick Trees</div>
+      </div>
+    </div>
+
+    <!-- Case Content -->
+    <div class="case-content">
+      <section class="content-section">
+        <h2>Business Case Overview</h2>
+        <div class="business-brief">
+          <p>
+            Real-time inventory tracking is a critical capability for modern
+                        logistics and supply chain operations. It enables organizations
+                        like Amazon to monitor stock levels, item movements, and asset
+                        locations across multiple nodes in real-time, ensuring high
+                        availability and minimizing delays. This system improves demand
+                        forecasting, reduces overstock and stockouts, and allows for
+                        immediate response to supply disruptions. By integrating sensors,
+                        IoT devices, and cloud-based data systems, real-time tracking also
+                        supports predictive analytics, helping teams make data-driven
+                        decisions on restocking, warehousing, and fleet coordination.In
+                        Amazon's logistics operations, drivers must optimize routes
+                        handling both package deliveries and customer return pickups
+                        simultaneously, creating a complex dual-operation challenge. Poor
+                        route planning increases delivery costs by 25-40% due to
+                        inefficient travel patterns, vehicle capacity mismanagement, and
+                        missed time windows. The main algorithmic solutions are TSP
+                        (Traveling Salesman Problem) for optimal small routes under 50
+                        stops, VRP (Vehicle Routing Problem) for medium-scale operations
+                        with capacity constraints, and Greedy algorithms for real-time
+                        dynamic rerouting. In a typical 30-delivery, 12-pickup Seattle
+                        route, TSP achieves 127-minute optimal time, VRP completes in 134
+                        minutes with better fuel efficiency, while Greedy provides instant
+                        rerouting for urgent changes. Amazon uses hybrid approaches
+                        combining optimal planning for base routes and greedy adjustments
+                        for dynamic pickup requests throughout the delivery day.
+          </p>
+        </div>
+      </section>
+<!-- Algorithm Selection Buttons -->
+      <section class="content-section">
+        <h2>Algorithm Comparison</h2>
+        <div class="algorithm-selector">
+          <button class="algorithm-btn active" onclick="showAlgorithm('segment-trees')">
+            Segment Trees Algorithm
+          </button>
+          <button class="algorithm-btn" onclick="showAlgorithm('fenwick-trees')">
+            Fenwick Trees Algorithm
+          </button>
+        </div>
+      </section>
+
+      <!-- Segment Tree Section -->
+      <div id="segment-trees-section" class="algorithm-section active">
+        <section class="content-section">
+          <h2>Segment Trees Algorithm Explanation</h2>
+          <div class="algorithm-explanation">
+            <p>
+                            Segment Trees are advanced data structures that allow efficient
+                            processing of range queries and updates in logarithmic time.
+                            They're particularly useful in logistics applications like
+                            Amazon's warehouse management systems, where inventory
+                            quantities across multiple bins or sections need to be queried
+                            and updated frequently in real-time. Segment Trees help track
+                            stock levels, perform range-based analytics, and respond to
+                            batch updates without scanning the entire dataset.
+                        </p>
+
+                        <p><strong>How it works:</strong></p>
+                        <ol>
+                            <li>
+                                Build a binary tree where each node represents a segment
+                                (range) of the original array or data structure.
+                            </li>
+                            <li>
+                                Each internal node stores an aggregated value (e.g., sum, min,
+                                max) of its segment.
+                            </li>
+                            <li>
+                                To answer a query (e.g., total items between shelves 5 and
+                                12), traverse the tree to find overlapping segments and
+                                combine their values.
+                            </li>
+                            <li>
+                                To update a value (e.g., +3 items to shelf 8), modify the
+                                corresponding leaf and propagate changes up the tree.
+                            </li>
+                            <li>
+                                This ensures fast query and update times in O(log n),
+                                supporting scalable, real-time inventory systems.
+                            </li>
+                        </ol>
+                    </div>
+        </section>
+
+        <!-- Algorithm Image Placeholder -->
+                <div class="image-container">
+                    <img src="gifs and imagees/segment.webp" alt="Segment-Trees Algorithm Visualization"
+                        class="algorithm-img" />
+                    <div class="image-caption">
+                        [11] Segment-Trees Algorithm step-by-step execution for Real time
+                        inventory tracking
+                    </div>
+                </div>
+
+        <section class="content-section">
+                    <h2>
+                        How Segment-Trees Algorithm Solves Amazon's Delivery Problem
+                    </h2>
+                    <div class="business-application">
+                        <p>
+                            Segment Trees provide a powerful solution for efficiently
+                            handling range-based queries and updates, which are critical in
+                            optimizing warehouse inventory distribution, regional load
+                            balancing, and delivery hub management. By enabling real-time
+                            aggregation and modification of data over dynamic intervals,
+                            Segment Trees support faster decision-making in Amazon's complex
+                            logistics ecosystem.
+                        </p>
+
+                        <p><strong>Real-world Application:</strong></p>
+                        <ul>
+                            <li>
+                                <strong>Inventory Range Queries:</strong> Allows instant
+                                checking of available stock across multiple warehouse
+                                sections, enabling smarter restocking and dispatch decisions.
+                            </li>
+                            <li>
+                                <strong>Dynamic Load Balancing:</strong> Supports balancing
+                                delivery loads across zones by querying total package volume
+                                or weight in each region segment.
+                            </li>
+                            <li>
+                                <strong>Time Window Allocation:</strong> Optimizes delivery
+                                time slots by managing delivery demand over specific periods
+                                using aggregated scheduling data.
+                            </li>
+                            <li>
+                                <strong>Efficient Updates:</strong> Instantly reflects package
+                                pickup or drop updates in system-wide dashboards without
+                                needing to recalculate entire datasets.
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+        <!-- Segment Tree Code Implementation -->
+                <section class="content-section">
+                    <h2>Segment Tree Algorithm Implementation</h2>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="language-tag">C++ - Segment Tree Algorithm</span>
+                            <button class="expand-btn" onclick="toggleCode('segment-code')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="6,9 12,15 18,9"></polyline>
+                                </svg>
+                                Show Full Code
+                            </button>
+                            <button class="copy-btn" onclick="copyCode('segment-code')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="m5 15-4-4 4-4"></path>
+                                </svg>
+                                Copy Code
+                            </button>
+                        </div>
+                        <pre class="code-block collapsed"><code id="segment-code">// [PLACEHOLDER FOR Segment Tree IMPLEMENTATION]
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+class SegmentTree {
+  vector&lt;int&gt; tree;
+  int n;
+
+  void build(vector&lt;int&gt;&amp; arr, int node, int start, int end) {
+    if (start == end) {
+      tree[node] = arr[start];
+    } else {
+      int mid = (start + end) / 2;
+      build(arr, 2*node, start, mid);
+      build(arr, 2*node+1, mid+1, end);
+      tree[node] = tree[2*node] + tree[2*node+1];
+    }
+  }
+
+  void update(int node, int start, int end, int idx, int value) {
+    if (start == end) {
+      tree[node] = value;
+    } else {
+      int mid = (start + end) / 2;
+      if (idx &lt;= mid) update(2*node, start, mid, idx, value);
+      else update(2*node+1, mid+1, end, idx, value);
+      tree[node] = tree[2*node] + tree[2*node+1];
+    }
+  }
+
+  int query(int node, int start, int end, int l, int r) {
+    if (r &lt; start || l &gt; end) return 0;
+    if (l &lt;= start &amp;&amp; end &lt;= r) return tree[node];
+    int mid = (start + end) / 2;
+    return query(2*node, start, mid, l, r) + query(2*node+1, mid+1, end, l, r);
+  }
+
+public:
+  SegmentTree(vector&lt;int&gt;&amp; arr) {
+    n = arr.size();
+    tree.resize(4*n);
+    build(arr, 1, 0, n-1);
+  }
+
+  void updateBin(int idx, int value) {
+    update(1, 0, n-1, idx, value);
+  }
+
+  int totalStock(int l, int r) {
+    return query(1, 0, n-1, l, r);
+  }
+};
+
+int main() {
+  vector&lt;int&gt; bins = {10, 20, 15, 12, 8, 5};
+  SegmentTree st(bins);
+
+  cout &lt;&lt; "Stock from bin 1 to 4: " &lt;&lt; st.totalStock(1, 4) &lt;&lt; endl;
+  st.updateBin(3, 18);
+  cout &lt;&lt; "After update, bin 1 to 4: " &lt;&lt; st.totalStock(1, 4) &lt;&lt; endl;
+  return 0;
+}
+</code></pre>
+          </div>
+        </section>
+      </div>
+<!-- Fenwick Trees Section -->
+<div id="fenwick-trees-section" class="algorithm-section">
+  <section class="content-section">
+    <h2>Fenwick Trees Explanation</h2>
+    <div class="algorithm-explanation">
+                            <p>
+                                Fenwick Trees, also known as Binary Indexed Trees (BIT), are efficient data
+                                structures used for computing prefix sums and performing range updates in
+                                logarithmic time. They are ideal for Amazon's real-time inventory tracking
+                                or sales aggregation systems where frequent updates and quick summaries are
+                                required over large datasets.
+                            </p>
+
+                            <p><strong>How it works:</strong></p>
+                            <ol>
+                                <li>
+                                    Initialize an auxiliary array (BIT) to store cumulative values for efficient access
+                                </li>
+                                <li>
+                                    To update a value (e.g., add items to a bin), propagate the change to relevant
+                                    indices
+                                    in BIT using bit manipulation
+                                </li>
+                                <li>
+                                    To get the total from start to a given index (prefix sum), sum all responsible
+                                    indices
+                                    using the BIT structure
+                                </li>
+                                <li>
+                                    Repeated queries and updates operate in O(log n) time, making it highly scalable
+                                </li>
+                                <li>
+                                    Supports point updates and prefix/range queries in dynamic, changing systems like
+                                    warehouse stocks or customer orders
+                                </li>
+                            </ol>
+                        </div>
+  </section>
+
+  <div class="image-container">
+    <img src="gifs and imagees/fenwick.jpg" alt="Fenwick Trees Visualization" class="algorithm-img" />
+    <div class="image-caption">[12] Fenwick Tree structure</div>
+  </div>
+
+  <section class="content-section">
+                        <h2>How Fenwick Trees Solves Amazon's Delivery Problem</h2>
+                        <div class="business-application">
+                            <p>
+                                Fenwick Trees are highly effective in scenarios that require real-time updates
+                                and fast cumulative queries, such as managing Amazon's inventory systems,
+                                sales dashboards, or order fulfillment metrics across thousands of products.
+                            </p>
+
+                            <p><strong>Real-world Application:</strong></p>
+                            <ul>
+                                <li>
+                                    <strong>Inventory Tracking:</strong> Quickly updates and queries total stock
+                                    levels across warehouse sections, enabling faster restocking and dispatch
+                                </li>
+                                <li>
+                                    <strong>Sales Summarization:</strong> Efficiently computes daily, weekly, or
+                                    monthly product sales using prefix sum queries
+                                </li>
+                                <li>
+                                    <strong>Dynamic Data Dashboards:</strong> Powers real-time customer demand
+                                    dashboards and heat maps with constantly changing data
+                                </li>
+                                <li>
+                                    <strong>Fulfillment Monitoring:</strong> Tracks cumulative order completions
+                                    and package scans across fulfillment centers with minimal latency
+                                </li>
+                            </ul>
+                        </div>
+
+                    </section>
+
+  <!-- Fenwick Tree Code Implementation -->
+                    <section class="content-section">
+                    <h2>Fenwick Tree Algorithm Implementation</h2>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="language-tag">C++ - Fenwick Tree Algorithm</span>
+                            <button class="expand-btn" onclick="toggleCode('fenwick-code')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="6,9 12,15 18,9"></polyline>
+                                </svg>
+                                Show Full Code
+                            </button>
+                            <button class="copy-btn" onclick="copyCode('fenwick-code')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="m5 15-4-4 4-4"></path>
+                                </svg>
+                                Copy Code
+                            </button>
+                        </div>
+                        <pre class="code-block collapsed"><code id="fenwick-code">// [PLACEHOLDER FOR DIJKSTRA IMPLEMENTATION]
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+class FenwickTree {
+  vector&lt;int&gt; BIT;
+  int n;
+
+public:
+  FenwickTree(int size) {
+    n = size;
+    BIT.assign(n + 1, 0);
+  }
+
+  void update(int index, int delta) {
+    while (index &lt;= n) {
+      BIT[index] += delta;
+      index += index &amp; -index;
+    }
+  }
+
+  int query(int index) {
+    int sum = 0;
+    while (index &gt; 0) {
+      sum += BIT[index];
+      index -= index &amp; -index;
+    }
+    return sum;
+  }
+
+  int rangeSum(int l, int r) {
+    return query(r) - query(l - 1);
+  }
+};
+
+int main() {
+  FenwickTree ft(10);
+  ft.update(2, 5);  // Add 5 to bin 2
+  ft.update(4, 8);  // Add 8 to bin 4
+  ft.update(5, 3);  // Add 3 to bin 5
+
+  cout &lt;&lt; "Stock from bin 1 to 5: " &lt;&lt; ft.rangeSum(1, 5) &lt;&lt; endl;
+  cout &lt;&lt; "Stock from bin 3 to 4: " &lt;&lt; ft.rangeSum(3, 4) &lt;&lt; endl;
+  return 0;
+}
+</code></pre>
+    </div>
+  </section>
+</div>
+
+<!-- Complexity Analysis Section -->
+                    <section class="content-section">
+                        <h2>Algorithm Complexity Analysis</h2>
+                        <div class="complexity-overview">
+                            <p>
+                                Comparing both algorithms for Amazon's delivery operations helps
+                                determine the best approach based on route complexity, real-time
+                                requirements, and the presence of negative cost scenarios.
+                            </p>
+                        </div>
+
+                        <!-- Complexity Comparison Table -->
+                        <div class="table-container">
+                            <h3>Time & Space Complexity Comparison</h3>
+                            <table class="complexity-table">
+                                <thead>
+                                    <tr>
+                                        <th>Algorithm</th>
+                                        <th>Time Complexity</th>
+                                        <th>Space Complexity</th>
+                                        <th>Handles Negative Weights</th>
+                                        <th>Real-time Suitability</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Segment Tree</strong></td>
+                                        <td class="good">O(log N) (query & update)</td>
+                                        <td class="good">O(4N)</td>
+                                        <td class="neutral">Not Applicable</td>
+                                        <td class="best">Excellent</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Fenwick Tree (BIT)</strong></td>
+                                        <td class="best">O(log N) (query & update)</td>
+                                        <td class="best">O(N)</td>
+                                        <td class="neutral">Not Applicable</td>
+                                        <td class="best">Excellent</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bellman-Ford Algorithm</td>
+                                        <td class="good">O(VE)</td>
+                                        <td class="best">O(V)</td>
+                                        <td class="best">Yes</td>
+                                        <td class="good">Moderate</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dijkstra Algorithm</td>
+                                        <td class="best">O((V + E) log V)</td>
+                                        <td class="best">O(V)</td>
+                                        <td class="poor">No</td>
+                                        <td class="best">Excellent</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Floyd-Warshall</td>
+                                        <td class="poor">O(V³)</td>
+                                        <td class="good">O(V²)</td>
+                                        <td class="best">Yes</td>
+                                        <td class="poor">Limited</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Greedy Approach</td>
+                                        <td class="best">O(E log V)</td>
+                                        <td class="best">O(V)</td>
+                                        <td class="poor">No</td>
+                                        <td class="best">Instant</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <!-- Amazon Delivery Scenario Analysis -->
+                        <div class="table-container">
+                            <h3>Amazon Data Tracking & Analytics Scenario Performance Analysis</h3>
+                            <table class="complexity-table">
+                                <thead>
+                                    <tr>
+                                        <th>Scenario</th>
+                                        <th>Segment Tree</th>
+                                        <th>Fenwick Tree (BIT)</th>
+                                        <th>Best Choice</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Warehouse Inventory Queries</strong></td>
+                                        <td class="best">Handles complex range queries (sum/min/max)</td>
+                                        <td class="good">Efficient prefix sums only</td>
+                                        <td>Segment Tree (more powerful)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Real-time Order Updates</strong></td>
+                                        <td class="good">Fast point/range updates</td>
+                                        <td class="best">Simpler and faster to implement</td>
+                                        <td>Fenwick Tree (fast & lightweight)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Sales Trend Analysis</strong></td>
+                                        <td class="best">Flexible for sum, min, max trends</td>
+                                        <td class="good">Prefix sums supported</td>
+                                        <td>Segment Tree (more analytics features)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Large-scale Data Feeds</strong></td>
+                                        <td class="good">More memory intensive</td>
+                                        <td class="best">Compact, scales well</td>
+                                        <td>Fenwick Tree (efficient footprint)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Key Advantages Comparison -->
+                        <h3>Data Structure Selection Guide for Amazon Operations</h3>
+                        <div class="advantages-grid">
+                            <div class="advantage-card segment-trees">
+                                <h4> Segment Tree</h4>
+                                <p>
+                                    <strong>Best for:</strong> Real-time analytics, inventory trends, complex range
+                                    queries
+                                    (sum/min/max)
+                                </p>
+                                <p>
+                                    <strong>Advantages:</strong> Powerful and versatile, supports a wide range of
+                                    operations
+                                    beyond sums
+                                </p>
+                            </div>
+                            <div class="advantage-card fenwick-trees">
+                                <h4> Fenwick Tree (Binary Indexed Tree)</h4>
+                                <p>
+                                    <strong>Best for:</strong> Real-time counters, fast point updates, prefix sum
+                                    queries
+                                </p>
+                                <p>
+                                    <strong>Advantages:</strong> Lightweight, easy to implement, ideal for fast and
+                                    frequent
+                                    updates
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="complexity-note">
+                            <strong>Amazon's Smart Analytics Strategy:</strong> Use Fenwick Tree (BIT) for
+                            high-frequency
+                            update scenarios like real-time package scanning and delivery logs. Deploy Segment Trees for
+                            deeper insights like range-based inventory checks or regional sales trend analysis. This
+                            hybrid
+                            approach delivers fast performance, low memory usage, and scalable insights for warehouse
+                            and
+                            delivery analytics.
+                        </div>
+                    </section>
+                </div>
+
+<!-- Navigation -->
+<div class="case-navigation">
+  <a href="case-detail6.html" class="nav-btn prev-btn">← Prev case</a>
+  <a href="case-detail8.html" class="nav-btn next-btn">Next Case →</a>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>&copy; 2024 Abhishek A Joshi - KLE Technological University</p>
+  <p>Algorithmic Problem Solving Portfolio</p>
+</footer>
+</div>
+
+<script>
+  function showAlgorithm(algorithm) {
+    document.querySelectorAll(".algorithm-section").forEach((section) => {
+      section.classList.remove("active");
+    });
+    document.querySelectorAll(".algorithm-btn").forEach((btn) => {
+      btn.classList.remove("active");
+    });
+    document.getElementById(algorithm + "-section").classList.add("active");
+    event.target.classList.add("active");
+  }
+
+  function toggleCode(codeId) {
+    const codeBlock = document.getElementById(codeId).closest(".code-block");
+    const expandBtn = event.target.closest(".expand-btn");
+    if (codeBlock.classList.contains("collapsed")) {
+      codeBlock.classList.remove("collapsed");
+      expandBtn.innerHTML = '<svg width="16" height="16"><polyline points="18,15 12,9 6,15"/></svg>Hide Code';
+    } else {
+      codeBlock.classList.add("collapsed");
+      expandBtn.innerHTML = '<svg width="16" height="16"><polyline points="6,9 12,15 18,9"/></svg>Show Full Code';
+    }
+  }
+
+  function copyCode(codeId) {
+    const codeContent = document.getElementById(codeId).textContent;
+    const copyBtn = event.target.closest(".copy-btn");
+    navigator.clipboard.writeText(codeContent).then(() => {
+      copyBtn.innerHTML = 'Copied!';
+      setTimeout(() => {
+        copyBtn.innerHTML = 'Copy Code';
+      }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
