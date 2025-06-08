@@ -398,9 +398,10 @@ body::before {
 /* Cases Grid */
 .cases-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: calc(50% - 12px) calc(50% - 12px); /* 50% width minus half the gap */
   gap: 24px;
   margin: 40px 0;
+  justify-content: center;
 }
 
 .case-card {
@@ -811,11 +812,6 @@ html {
 /* Smooth scrolling for the entire page */
 html {
   scroll-behavior: smooth;
-}
-
-/* Add padding to body to account for fixed navbar */
-body {
-  padding-top: 80px;
 }
 
 /* Section scroll offset to account for fixed navbar */
